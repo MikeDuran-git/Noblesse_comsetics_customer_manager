@@ -9,6 +9,24 @@
 </head>
 <body style="background-color: burlywood;">
 
+<!--DATABASE CONNECTION-->
+<?php
+include 'connexion.php'
+?>
+<!--DATABASE CONNECTION END-->
+
+
+<?php
+
+$query='select * from clients;';
+
+$result= $db->query($query);
+
+
+?>
+
+
+
 <!--HEADER-->
 <header id="main_header">
     <h1>Liste des Clients</h1>
@@ -37,15 +55,28 @@
                 <th>Email</th>
             </tr>
 
-            <tr>
+            <!--PHP input structure-->
+            <?php
+
+            while($row = $result->fetch_array()){
+                echo '            
+                <tr>
                 <td>
                     <button class="container">Select</button>
                 </td>
-                <td>Maria </td>
-                <td>Anders</td>
-                <td>mike.duran@hotmail.de</td>
-            </tr>
-            
+                <td>'.
+                    $row[2]. #prenom
+                '</td>
+                <td>'.
+                    $row[1]. #nom
+                '</td>
+                <td>'.
+                    $row[5]. # email
+                '</td>
+                ';
+            }
+            ?>
+            <!--PHP input structure END-->
         </table>
     </div>
     <!--END DB_content-->
