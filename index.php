@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="./index.css">
 
 </head>
-<body>
+<body style="background-color: burlywood;">
 
 <!--HEADER-->
 <header id="main_header">
@@ -20,21 +20,41 @@
 <div class="container" id="main_center">
     
     <!--Searchbar-->
-    <div>
-    
-    <input type="text" placeholder="Search..">
-    <button>BUTTON</button>
-    
+    <div class="container">  
+        <input type="text" placeholder="Search..">
+        <button>BUTTON</button>
     </div>
     <!--END Searchbar-->
 
     
     <!--DB_content-->
     <div class="container" id="DB_content">
-        <button>SELECT_CLIENT</button>
+        <table>
+            <tr>
+                <th>Bouton selection</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+            </tr>
+
+            <tr>
+                <td>
+                    <button class="container">Select</button>
+                </td>
+                <td>Maria </td>
+                <td>Anders</td>
+                <td>mike.duran@hotmail.de</td>
+            </tr>
+            
+        </table>
     </div>
     <!--END DB_content-->
     
+    <div class="container">
+        <button>Ajouter un Client</button>
+        <button>Enlever un Client</button>
+    </div>
+
 </div>
 <!--END CENTER-->
 

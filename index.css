@@ -10,7 +10,7 @@
     position:sticky;
     width: 100%;
     height:100%;
-    background-color: yellow;
+    background-color: brown;
 }
 
 #main_footer{
@@ -19,3 +19,9 @@
     height:10%;
     background-color: red;
 }
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+  }
