@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Noblesse Cosmetics Client Page</title>
+<title>Noblesse Cosmetics Client List</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
@@ -13,15 +13,20 @@
 <!--DATABASE CONNECTION-->
     <?php
     include 'connexion.php';
+    session_start();
 
     function database_print($result){
         $result->setFetchMode(PDO:: FETCH_OBJ);
         $result->execute();
+        $counter=0;
         while($row = $result->fetch()){
+
             echo '            
             <tr>
             <td>
-                <button class="container">Select</button>
+                <form action="info_client_page.php?nom='.$row->nom.'&prenom='.$row->prenom.'&Email='.$row->Email.'&date='.$row->date_naissance.'&tel='.$row->num_tel.'" method="POST"> 
+                    <button><input name="select_'.$counter.'"></button>
+                </form>
             </td>
             <td>'.
                 $row->prenom. #prenom
@@ -63,7 +68,8 @@
 
         </div>
         <!--END Searchbar-->
-        
+
+
         
         <!--DB_content-->
         <div id="client_list">
@@ -96,7 +102,6 @@
                 else{
                     $result= $db->prepare("SELECT * FROM `clients`");
                     database_print($result);
-
                 }
                 ?>
                 <!--PHP input structure END-->
