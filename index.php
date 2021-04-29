@@ -13,6 +13,28 @@
 <!--DATABASE CONNECTION-->
     <?php
     include 'connexion.php';
+
+    function database_print($result){
+        $result->setFetchMode(PDO:: FETCH_OBJ);
+        $result->execute();
+        while($row = $result->fetch()){
+            echo '            
+            <tr>
+            <td>
+                <button class="container">Select</button>
+            </td>
+            <td>'.
+                $row->prenom. #prenom
+            '</td>
+            <td>'.
+                $row->nom. #nom
+            '</td>
+            <td>'.
+                $row->Email. # email
+            '</td>
+            ';
+        };
+    };
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -69,49 +91,12 @@
 
                         }
 
-                        $result->setFetchMode(PDO:: FETCH_OBJ);
-                        $result->execute();
-                        
-
-                        while($row = $result->fetch()){
-                            echo '            
-                            <tr>
-                            <td>
-                                <button class="container">Select</button>
-                            </td>
-                            <td>'.
-                                $row->prenom. #prenom
-                            '</td>
-                            <td>'.
-                                $row->nom. #nom
-                            '</td>
-                            <td>'.
-                                $row->Email. # email
-                            '</td>
-                            ';
-                        }
+                        database_print($result);
                     }
                 else{
                     $result= $db->prepare("SELECT * FROM `clients`");
-                    $result->setFetchMode(PDO:: FETCH_OBJ);
-                    $result->execute();
-                    while($row = $result->fetch()){
-                        echo '            
-                        <tr>
-                        <td>
-                            <button class="container">Select</button>
-                        </td>
-                        <td>'.
-                            $row->prenom. #prenom
-                        '</td>
-                        <td>'.
-                            $row->nom. #nom
-                        '</td>
-                        <td>'.
-                            $row->Email. # email
-                        '</td>
-                        ';
-                    }
+                    database_print($result);
+
                 }
                 ?>
                 <!--PHP input structure END-->
