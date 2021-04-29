@@ -1,8 +1,14 @@
 #main_header {
     width: 100%;
     text-align: center;
+    background-color: blue;
 }
 
+
+#main_center{
+    margin: 100px;
+
+}
 
 td, th {
     border: 1px solid #dddddd;
