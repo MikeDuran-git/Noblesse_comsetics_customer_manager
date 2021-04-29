@@ -15,6 +15,7 @@
     include 'connexion.php';
     session_start();
     
+    //Client Data
     $nom=$_GET['nom'];
     $prenom=$_GET['prenom'];
     $Email=$_GET['Email'];
@@ -28,6 +29,7 @@
 <!--DATABASE CONNECTION END-->
 
 
+
     <!--HEADER-->
     <header id="main_header">
         <h1>Info du Client</h1>
@@ -35,8 +37,11 @@
     <!--END_HEADER-->
 
 
+
     <!--CENTER-->
     <div class="container" id="main_center">
+        <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'>
+        
         <p>Name: <?php echo $nom;?></p> <br>
         <p>Prenom: <?php echo $prenom; ?></p> <br>
         <p>Date de naissance: <?php echo $date_naissance; ?></p> <br>

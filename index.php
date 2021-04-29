@@ -93,7 +93,7 @@
                         }
                         else{
                         //le cas si il y a un nom donner
-                            $result= $db->prepare("SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name'");
+                            $result= $db->prepare("SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'");
 
                         }
 
