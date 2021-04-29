@@ -1,0 +1,32 @@
+#main_header {
+    width: 100%;
+    text-align: center;
+}
+
+#add_client_button{
+    float:left;
+    margin-right:5px;
+}
+
+
+#main_center{
+
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    table-layout:fixed;
+
+
+  }
+
+
+#main_footer{
+    width: 100%;
+    text-align: center;
+}
+
+
