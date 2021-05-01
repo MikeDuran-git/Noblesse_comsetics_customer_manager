@@ -9,7 +9,9 @@
 </head>
 
 <style>
-
+#infos_rdv{
+    margin-top: 10%;
+}
 </style>
 
 <body style="background-color: burlywood;">
@@ -22,14 +24,19 @@
     $client_id=$_GET['client_id'];
 
     //Client Data
+    $date_rdv=$_GET['date_rdv'];
+    $nom_procedure=$_GET['nom_procedure'];
+    $infos_rdv=$_GET['infos_rdv'];
+    $nom=$_GET['nom_client'];
+
+
     ?>
 <!--DATABASE CONNECTION END-->
 
-
-
     <!--HEADER-->
     <header id="main_header">
-        <h1>Info du Rendezvous</h1>
+
+        <h1>Info du Rendezvous de <?php echo $nom;?></h1>
     </header>
     <!--END_HEADER-->
     
@@ -39,20 +46,25 @@
     <!--CENTER-->
     <div class="container" id="main_center">
         <?php
-        $infos_to_send="location.href='info_client_page.php?client_id=1'";
-        echo "
-        <input type='button' onClick=".$infos_to_send." value='Retour à la liste des clients'>    
-        "
-        ;
+            $infos_to_send="location.href='info_client_page.php?client_id=".$client_id."'";
+            echo "<input type='button' onClick=".$infos_to_send." value='Retour info du client'>";
         ?>
 
-      <!--  <input type='button' onClick="location.href='info_client_page.php?client_id=1'" value='Retour à la liste des clients'>
--->
         <!--Infos of the rdv-->
         <div id= "infos_rdv">
-            <?php
-                echo '<strong>Procédure effectuée:</strong><br>';
-            ?>
+
+            <table style="width:100%">
+                <tr>
+                    <td><?php echo '<strong>Procédure effectuée:</strong><br>';?></td>
+                    <td><?php echo '<strong>Date du rdv:</strong><br>';?></td>
+                </tr>
+                <tr>
+                    <td><?php echo '<strong>infos:</strong><br>'; ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo '<strong>Date de naissance:</strong><br>'?></td>
+                </tr>
+            </table>
         </div>
         <!--Infos of the rdv END-->
 

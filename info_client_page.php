@@ -30,7 +30,7 @@ table, th, td {
     include 'connexion.php';
     session_start();
     
-    function database_print($result,$client_id){
+    function database_print($result,$client_id,$nom){
        $result->setFetchMode(PDO:: FETCH_OBJ);
         $result->execute(); 
         $counter=0;
@@ -40,8 +40,9 @@ table, th, td {
                            '&date_rdv='.$row->date_rdv.
                            '&infos_rdv='.$row->infos_rdv.
                            '&nom_procedure='.$row->nom_procedure.
-                           ';';
-
+                           '&nom_client='.$nom.
+                           '';
+            print($infos_to_send);
             echo '            
             <tr>
             <td>
@@ -57,7 +58,7 @@ table, th, td {
             '</td>
             ';
         };
-        if($counter==0){ echo "Le nom, le prenom ou le numero de telephone de ce Client n'existe pas";}
+        if($counter==0){ echo "Le client n'a pas de rdv";}
     };
 
     //Client Data
@@ -127,7 +128,7 @@ table, th, td {
                 <?php
                     $result= $db->prepare("SELECT * FROM rendezvous, clients where rendezvous.id_client=".$client_id." and clients.id=".$client_id." ORDER BY date_rdv Desc;");
                     
-                    database_print($result,$client_id);
+                    database_print($result,$client_id,$nom);
                 ?>
         </table>
         </div>
