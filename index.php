@@ -20,7 +20,7 @@
         $result->execute();
         $counter=0;
         while($row = $result->fetch()){
-
+            $counter+=1;
             echo '            
             <tr>
             <td>
@@ -39,6 +39,7 @@
             '</td>
             ';
         };
+        if($counter==0){ echo "Le nom, le prenom ou le numero de telephone de ce Client n'existe pas";}
     };
     ?>
 <!--DATABASE CONNECTION END-->
