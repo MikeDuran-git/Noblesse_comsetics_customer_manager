@@ -83,7 +83,7 @@ table, th, td {
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients">
-
+        <button>Modifier</button>
 
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
