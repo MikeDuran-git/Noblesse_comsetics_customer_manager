@@ -12,6 +12,11 @@
 #infos_rdv{
     margin-top: 10%;
 }
+
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+}
 </style>
 
 <body style="background-color: burlywood;">
@@ -55,14 +60,20 @@
 
             <table style="width:100%">
                 <tr>
-                    <td><?php echo '<strong>Procédure effectuée:</strong><br>';?></td>
-                    <td><?php echo '<strong>Date du rdv:</strong><br>';?></td>
+                    <td><?php echo '<strong>Procédure effectuée: </strong><br>'.$nom_procedure.'';?></td>
+                    <td><?php echo '<strong>Date du rdv:</strong><br>'.$date_rdv.'';?></td>
                 </tr>
                 <tr>
                     <td><?php echo '<strong>infos:</strong><br>'; ?></td>
                 </tr>
                 <tr>
-                    <td><?php echo '<strong>Date de naissance:</strong><br>'?></td>
+                    <td>
+                        <?php echo '<strong>Image Avant:</strong><br>'; ?>
+                    </td>
+                    <td>
+                        <?php echo '<strong>Image Après:</strong><br>'; ?>
+                    </td>
+
                 </tr>
             </table>
         </div>
@@ -72,6 +83,7 @@
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients">
+
 
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->

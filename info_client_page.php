@@ -42,7 +42,6 @@ table, th, td {
                            '&nom_procedure='.$row->nom_procedure.
                            '&nom_client='.$nom.
                            '';
-            print($infos_to_send);
             echo '            
             <tr>
             <td>
