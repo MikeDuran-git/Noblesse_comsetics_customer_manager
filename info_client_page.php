@@ -7,6 +7,16 @@
 <link rel="stylesheet" href="./layouts/info_client_page.css">
 
 </head>
+
+<style>
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+  }
+table {
+    border-spacing: 15px;
+}
+</style>
 <body style="background-color: burlywood;">
 
 
@@ -40,14 +50,30 @@
 
     <!--CENTER-->
     <div class="container" id="main_center">
-        <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'>
         
-        <p>Name: <?php echo $nom;?></p> <br>
-        <p>Prenom: <?php echo $prenom; ?></p> <br>
-        <p>Date de naissance: <?php echo $date_naissance; ?></p> <br>
-        <p>numero Telephone: <?php echo $tel;?></p> <br>
-        <p>Email: <?php echo $Email; ?></p> <br>
+        <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'>
 
+        <div>
+            <table style="width:100%">
+                <tr>
+                    <td><?php echo '<strong>Nom:</strong><br>'.$nom;?></td>
+                    <td><?php echo '<strong>numero Telephone:</strong><br>'.$tel;?></td>
+                </tr>
+                <tr>
+                    <td><?php echo '<strong>Prénom:</strong><br>'.$prenom; ?></td>
+                    <td><?php echo '<strong>Email:</strong><br>'.$Email; ?></td>
+
+                </tr>
+                <tr>
+                    <td><?php echo '<strong>Date de naissance:</strong><br>'.$date_naissance; ?></td>
+                </tr>
+            </table>
+
+        </div>    
+
+    
+    
+    
     </div>
     <!--END CENTER-->
 

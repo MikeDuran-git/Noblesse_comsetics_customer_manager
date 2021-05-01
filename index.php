@@ -87,7 +87,6 @@
     
                     if(isset($_POST['submit'])) {
                         $client_name= $_POST['search'];
-                        
                         //le cas si il n'y a pas de nom spécifié
                         if (strlen($client_name)==0){
                             $result= $db->prepare("SELECT * FROM `clients`");
@@ -95,9 +94,7 @@
                         else{
                         //le cas si il y a un nom donner
                             $result= $db->prepare("SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'");
-
                         }
-
                         database_print($result);
                     }
                 else{
@@ -109,8 +106,6 @@
             </table>
         </div>
         <!--END DB_content-->
-
-
     </div>
     <!--END CENTER-->
 
