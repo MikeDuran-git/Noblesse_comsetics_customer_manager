@@ -9,22 +9,9 @@
 </head>
 
 <style>
-table, th, td {
-    border: 1px solid black;
-    padding: 5px;
-}
-
-
-#client_info{
-    margin-top: 10%;
-}
-
-#bouton_clients{
-    margin-top: 10%;
-}
-
 
 </style>
+
 <body style="background-color: burlywood;">
 
 
@@ -32,42 +19,9 @@ table, th, td {
     <?php
     include 'connexion.php';
     session_start();
-    
-    function database_print($result){
-        $result->setFetchMode(PDO:: FETCH_OBJ);
-        $result->execute();
-        $counter=0;
-        while($row = $result->fetch()){
-            $counter+=1;
-            echo '            
-            <tr>
-            <td>
-                <form action="info_procedure_page.php?nom='.$row->nom.'&prenom='.$row->prenom.'&Email='.$row->Email.'&date='.$row->date_naissance.'&tel='.$row->num_tel.'" method="POST"> 
-                    <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
-                </form>
-            </td>
-            <td>'.
-                $row->prenom. #prenom
-            '</td>
-            <td>'.
-                $row->nom. #nom
-            '</td>
-            <td>'.
-                $row->Email. # email
-            '</td>
-            ';
-        };
-        if($counter==0){ echo "Le nom, le prenom ou le numero de telephone de ce Client n'existe pas";}
-    };
-
+    $client_id=$_GET['client_id'];
 
     //Client Data
-    $nom=$_GET['nom'];
-    $prenom=$_GET['prenom'];
-    $Email=$_GET['Email'];
-    $date_naissance=$_GET['date'];
-    $tel=$_GET['tel'];
-
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -78,21 +32,35 @@ table, th, td {
         <h1>Info du Rendezvous</h1>
     </header>
     <!--END_HEADER-->
+    
 
 
 
     <!--CENTER-->
     <div class="container" id="main_center">
+        <?php
+        $infos_to_send="location.href='info_client_page.php?client_id=1'";
+        echo "
+        <input type='button' onClick=".$infos_to_send." value='Retour à la liste des clients'>    
+        "
+        ;
+        ?>
 
-        <!--Appointment of client-->
-        <div id= "rdv_client">
+      <!--  <input type='button' onClick="location.href='info_client_page.php?client_id=1'" value='Retour à la liste des clients'>
+-->
+        <!--Infos of the rdv-->
+        <div id= "infos_rdv">
+            <?php
+                echo '<strong>Procédure effectuée:</strong><br>';
+            ?>
         </div>
-        <!--Appointment of client END-->
+        <!--Infos of the rdv END-->
 
 
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients">
+
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
     

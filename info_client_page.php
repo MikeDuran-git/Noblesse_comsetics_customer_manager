@@ -30,16 +30,22 @@ table, th, td {
     include 'connexion.php';
     session_start();
     
-    function database_print($result){
-        $result->setFetchMode(PDO:: FETCH_OBJ);
-        $result->execute();
+    function database_print($result,$client_id){
+       $result->setFetchMode(PDO:: FETCH_OBJ);
+        $result->execute(); 
         $counter=0;
         while($row = $result->fetch()){
             $counter+=1;
+            $infos_to_send='client_id='.$client_id.
+                           '&date_rdv='.$row->date_rdv.
+                           '&infos_rdv='.$row->infos_rdv.
+                           '&nom_procedure='.$row->nom_procedure.
+                           ';';
+
             echo '            
             <tr>
             <td>
-                <form action="info_procedure_page.php?" method="POST"> 
+                <form action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
                     <input type="submit" style="text-align: center;" value="Choisir ce rendezvous" name="select_'.$counter.'">
                 </form>
             </td>
@@ -54,15 +60,21 @@ table, th, td {
         if($counter==0){ echo "Le nom, le prenom ou le numero de telephone de ce Client n'existe pas";}
     };
 
-
     //Client Data
     $client_id=$_GET['client_id'];
-    $nom=$_GET['nom'];
-    $prenom=$_GET['prenom'];
-    $Email=$_GET['Email'];
-    $date_naissance=$_GET['date'];
-    $tel=$_GET['tel'];
 
+    $result= $db->prepare("SELECT * FROM clients where clients.id=".$client_id.";");
+    $result->setFetchMode(PDO:: FETCH_OBJ);
+    $result->execute(); 
+    while($row = $result->fetch()){
+        $nom=$row->nom;
+        $prenom=$row->prenom;
+        $Email=$row->Email;
+        $date_naissance=$row->date_naissance;
+        $tel=$row->num_tel;
+    }
+    
+    
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -113,9 +125,9 @@ table, th, td {
                     <th>Procédure appliquée</th>
                 </tr>
                 <?php
-                    
                     $result= $db->prepare("SELECT * FROM rendezvous, clients where rendezvous.id_client=".$client_id." and clients.id=".$client_id." ORDER BY date_rdv Desc;");
-                    database_print($result);
+                    
+                    database_print($result,$client_id);
                 ?>
         </table>
         </div>
