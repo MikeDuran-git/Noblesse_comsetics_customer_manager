@@ -16,6 +16,12 @@ table, th, td {
 table {
     border-spacing: 15px;
 }
+
+#client_info{
+    margin-top: 10%;
+}
+
+
 </style>
 <body style="background-color: burlywood;">
 
@@ -31,9 +37,6 @@ table {
     $Email=$_GET['Email'];
     $date_naissance=$_GET['date'];
     $tel=$_GET['tel'];
-
-
-    
 
     ?>
 <!--DATABASE CONNECTION END-->
@@ -53,7 +56,10 @@ table {
         
         <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'>
 
-        <div>
+
+        <!--CLIENT INFO-->
+
+        <div id='client_info'>
             <table style="width:100%">
                 <tr>
                     <td><?php echo '<strong>Nom:</strong><br>'.$nom;?></td>
@@ -70,8 +76,21 @@ table {
             </table>
 
         </div>    
+        <!--CLIENT INFO END -->
 
-    
+
+        <!--Appointment of client-->
+        <div id= "rdv_client">
+
+        </div>
+        <!--Appointment of client END-->
+
+        <!--CLIENT BOUTON ADD REMOVE AND MOD -->
+
+        <div id= "bouton_clients">
+
+        </div>    
+        <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
     
     
     </div>
