@@ -25,7 +25,7 @@
             <tr>
             <td>
                 <form action="info_client_page.php?nom='.$row->nom.'&prenom='.$row->prenom.'&Email='.$row->Email.'&date='.$row->date_naissance.'&tel='.$row->num_tel.'" method="POST"> 
-                    <button><input name="select_'.$counter.'"></button>
+                    <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
                 </form>
             </td>
             <td>'.
@@ -52,7 +52,7 @@
 
 
     <!--CENTER-->
-    <div class="container" id="main_center">
+    <div class="cqontainer" id="main_center">
         
         <!--Searchbar-->
         <div>  
