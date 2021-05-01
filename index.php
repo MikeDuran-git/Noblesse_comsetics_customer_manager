@@ -24,7 +24,7 @@
             echo '            
             <tr>
             <td>
-                <form action="info_client_page.php?nom='.$row->nom.'&prenom='.$row->prenom.'&Email='.$row->Email.'&date='.$row->date_naissance.'&tel='.$row->num_tel.'" method="POST"> 
+                <form action="info_client_page.php?client_id='.$row->id.'&nom='.$row->nom.'&prenom='.$row->prenom.'&Email='.$row->Email.'&date='.$row->date_naissance.'&tel='.$row->num_tel.'" method="POST"> 
                     <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
                 </form>
             </td>

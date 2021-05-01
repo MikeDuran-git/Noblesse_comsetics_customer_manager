@@ -15,10 +15,13 @@ table, th, td {
 }
 
 
-#client_info, #bouton_clients, #rdv_client{
+#client_info{
     margin-top: 10%;
 }
 
+#bouton_clients{
+    margin-top: 10%;
+}
 
 
 </style>
@@ -39,15 +42,18 @@ table, th, td {
             echo '            
             <tr>
             <td>
-                <form action="info_procedure_page.php?" method="POST"> 
-                    <input type="submit" style="text-align: center;" value="Choisir ce rendezvous" name="select_'.$counter.'">
+                <form action="info_procedure_page.php?nom='.$row->nom.'&prenom='.$row->prenom.'&Email='.$row->Email.'&date='.$row->date_naissance.'&tel='.$row->num_tel.'" method="POST"> 
+                    <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
                 </form>
             </td>
             <td>'.
-                $row->date_rdv. #prenom
+                $row->prenom. #prenom
             '</td>
             <td>'.
-                $row->nom_procedure. #nom
+                $row->nom. #nom
+            '</td>
+            <td>'.
+                $row->Email. # email
             '</td>
             ';
         };
@@ -56,7 +62,6 @@ table, th, td {
 
 
     //Client Data
-    $client_id=$_GET['client_id'];
     $nom=$_GET['nom'];
     $prenom=$_GET['prenom'];
     $Email=$_GET['Email'];
@@ -70,7 +75,7 @@ table, th, td {
 
     <!--HEADER-->
     <header id="main_header">
-        <h1>Info du Client</h1>
+        <h1>Info du Rendezvous</h1>
     </header>
     <!--END_HEADER-->
 
@@ -78,46 +83,9 @@ table, th, td {
 
     <!--CENTER-->
     <div class="container" id="main_center">
-        
-        <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'>
-
-
-        <!--CLIENT INFO-->
-        <div id='client_info'>
-            <table style="width:100%">
-                <tr>
-                    <td><?php echo '<strong>Nom:</strong><br>'.$nom;?></td>
-                    <td><?php echo '<strong>numero Telephone:</strong><br>'.$tel;?></td>
-                </tr>
-                <tr>
-                    <td><?php echo '<strong>Prénom:</strong><br>'.$prenom; ?></td>
-                    <td><?php echo '<strong>Email:</strong><br>'.$Email; ?></td>
-
-                </tr>
-                <tr>
-                    <td><?php echo '<strong>Date de naissance:</strong><br>'.$date_naissance; ?></td>
-                </tr>
-            </table>
-
-        </div>    
-        <!--CLIENT INFO END -->
-
-
 
         <!--Appointment of client-->
         <div id= "rdv_client">
-        <table style="text-align:center;">
-                <tr>
-                    <th>Bouton selection</th>
-                    <th>Date du rdv</th>
-                    <th>Procédure appliquée</th>
-                </tr>
-                <?php
-                    
-                    $result= $db->prepare("SELECT * FROM rendezvous, clients where rendezvous.id_client=".$client_id." and clients.id=".$client_id." ORDER BY date_rdv Desc;");
-                    database_print($result);
-                ?>
-        </table>
         </div>
         <!--Appointment of client END-->
 
@@ -125,10 +93,6 @@ table, th, td {
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients">
-        <?php
-            echo '<button>Ajout Rendez-vous</button>';
-            echo '<button >Enlever un Rendez-vous</button>';
-            ?>
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
     
