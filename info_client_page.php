@@ -30,17 +30,20 @@ table, th, td {
     include 'connexion.php';
     session_start();
     
-    function database_print($result,$client_id,$nom){
+    function database_print($db,$result,$client_id,$nom){
        $result->setFetchMode(PDO:: FETCH_OBJ);
         $result->execute(); 
+        //count amount
+
         $counter=0;
         while($row = $result->fetch()){
-            $counter+=1;
+            $counter-=1;
             $infos_to_send='client_id='.$client_id.
                            '&date_rdv='.$row->date_rdv.
                            '&infos_rdv='.$row->infos_rdv.
                            '&nom_procedure='.$row->nom_procedure.
                            '&nom_client='.$nom.
+                           '&id_rdv='.$row->id_rdv.
                            '';
             echo '            
             <tr>
@@ -127,7 +130,7 @@ table, th, td {
                 <?php
                     $result= $db->prepare("SELECT * FROM rendezvous, clients where rendezvous.id_client=".$client_id." and clients.id=".$client_id." ORDER BY date_rdv Desc;");
                     
-                    database_print($result,$client_id,$nom);
+                    database_print($db,$result,$client_id,$nom);
                 ?>
         </table>
         </div>

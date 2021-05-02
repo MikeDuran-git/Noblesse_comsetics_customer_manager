@@ -17,6 +17,12 @@ table, th, td {
     border: 1px solid black;
     padding: 5px;
 }
+
+img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 </style>
 
 <body style="background-color: burlywood;">
@@ -29,22 +35,30 @@ table, th, td {
     $client_id=$_GET['client_id'];
 
     //Client Data
+    
+    
     $date_rdv=$_GET['date_rdv'];
     $nom_procedure=$_GET['nom_procedure'];
     $infos_rdv=$_GET['infos_rdv'];
     $nom=$_GET['nom_client'];
+    $id_rdv=$_GET['id_rdv'];
 
-    function get_img($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv,$avant_apres_bool){
+
+    function get_img($db,$client_id,$id_rdv,$avant_apres_bool){
         
-        $result= $db->query('SELECT * FROM `rendezvous` WHERE id_client="'.$client_id.'" AND date_rdv="'.$date_rdv.'" AND infos_rdv="'.$infos_rdv.'" AND nom_procedure="'.$nom_procedure.'"');
+        $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
         foreach($result as $row){
             $img_url=str_replace("_","/",$row[$avant_apres_bool]);
-            echo '<img src='.$img_url.' width="300" height="400">';
-
+            print $img_url;
+            echo '<img  src='.$img_url.' width="300" height="400">';
+            
             return $img_url;
         
         }
     }
+
+
+
 
     ?>
 <!--DATABASE CONNECTION END-->
@@ -88,7 +102,7 @@ table, th, td {
                         <?php echo '<strong>Image Avant:</strong><br>';
 
 
-                        get_img($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv,'img_avant');
+                            get_img($db,$client_id,$id_rdv,'img_apres');
                         
                         ?>
                         
@@ -96,9 +110,9 @@ table, th, td {
                     </td>
                     <td>
                         <?php 
-                        echo '<strong>Image Après:</strong><br>'; 
+                            echo '<strong>Image Après:</strong><br>'; 
                         
-                        get_img($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv,'img_apres');
+                            get_img($db,$client_id,$id_rdv,'img_apres');
                         ?>
 
                     </td>
