@@ -9,6 +9,7 @@
 </head>
 
 <style>
+
 #infos_rdv{
     margin-top: 10%;
 }
@@ -43,13 +44,13 @@ img{
     $infos_rdv=$_GET['infos_rdv'];
     $nom=$_GET['nom_client'];
     $id_rdv=$_GET['id_rdv'];
-
-
+    
     function get_img($db,$client_id,$id_rdv,$avant_apres_bool){
         
         $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
         
         foreach($result as $row){
+            
             $img_url=str_replace("_","/",$row[$avant_apres_bool]);
             
             echo '<img id='.$row["id_img"].' src='.$img_url.' width="300" height="400">';
@@ -57,14 +58,16 @@ img{
             //input to change image
             $upload_id="upload_id_".$row["id_img"].'_'.$avant_apres_bool;
             $submit_id="submit_".$row["id_img"]."_".$avant_apres_bool;
-            
+            $form_id='form_'.$row["id_img"].'_'.$avant_apres_bool; 
+            echo $form_id;
             echo '
-            <form  method="POST" enctype="multipart/form-data">
+            <form id='.$form_id.' style="display:none;" method="POST" enctype="multipart/form-data">
                 <input type="file" name='.$upload_id.' accept="imgs/*">
                 <button type="submit" name='.$submit_id.'>ENVOYER</button>
             </form>
             ';
 
+            //the case we switch images.
             if(isset($_POST[$submit_id])){
                 $filename=$_FILES[$upload_id]['name'];
 
@@ -127,13 +130,8 @@ img{
 
 
                             get_img($db,$client_id,$id_rdv,'img_avant');
-                            
-                           
-
                         
                         ?>
-                          
-                        
 
                     </td>
                     <td>
@@ -142,19 +140,24 @@ img{
                         
                             get_img($db,$client_id,$id_rdv,'img_apres');
                         ?>
-
                     </td>
-
                 </tr>
             </table>
+
+            <div id="button_add_rm" style="display: none">
+                <button>AJOUTER UNE IMAGE AVANT</button>
+                <button>AJOUTER UNE IMAGE APRES</button>
+            </div>
+
+            
         </div>
         <!--Infos of the rdv END-->
 
 
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
-        <div id= "bouton_clients">
-        <button>Modifier</button>
+        <div id= "bouton_clients" >
+        <button onclick="modify_content()">Modifier</button>
 
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
@@ -172,7 +175,46 @@ img{
 
 
 
+<script>
 
+function modify_content(){
+    
+    document.getElementById("button_add_rm").style="display:true;";
+    document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()" >Sauvegarder</button>';
+    <?php
+       $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+       $counter->execute();
+       $counter = $counter->fetch();
+       $counter=$counter['c'];
+       while($counter > 0){
+            echo 'document.getElementById("form_'.$counter.'_img_avant").style="display:true";';
+            echo 'document.getElementById("form_'.$counter.'_img_apres").style="display:true";';
+
+            $counter-=1;
+       }
+    ?>
+}
+
+
+function save_content(){
+    document.getElementById("button_add_rm").style="display:none;";
+    document.getElementById("bouton_clients").innerHTML='<button onclick="modify_content()">Modifier</button>';
+    <?php
+       $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+       $counter->execute();
+       $counter = $counter->fetch();
+       $counter=$counter['c'];
+       while($counter > 0){
+            echo 'document.getElementById("form_'.$counter.'_img_avant").style="display:none";';
+            echo 'document.getElementById("form_'.$counter.'_img_apres").style="display:none";';
+
+            $counter-=1;
+       }
+    ?>
+
+}
+
+</script>
 
 </body>
 </html>
