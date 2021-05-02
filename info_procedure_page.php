@@ -34,6 +34,13 @@ table, th, td {
     $infos_rdv=$_GET['infos_rdv'];
     $nom=$_GET['nom_client'];
 
+    function get_img_avant($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv){
+        
+        $result= $db->query('SELECT * FROM `rendezvous` WHERE id_client="'.$client_id.'" AND date_rdv="'.$date_rdv.'" AND infos_rdv="'.$infos_rdv.'" AND nom_procedure="'.$nom_procedure.'"');
+        foreach($result as $row){
+            print $row['img_avant']."<br>";
+        }
+    }
 
     ?>
 <!--DATABASE CONNECTION END-->
@@ -68,7 +75,15 @@ table, th, td {
                 </tr>
                 <tr>
                     <td>
-                        <?php echo '<strong>Image Avant:</strong><br>'; ?>
+                        <?php echo '<strong>Image Avant:</strong><br>';
+                        //rendezvous WHERE id_client=".$client_id." AND date_rdv=".$date_rdv." AND infos_rdv=".$infos_rdv." AND nom_procedure=".$nom_procedure."
+
+                        //"SELECT img_avant FROM rendezvous WHERE id_client=".$client_id."AND nom_procedure=".$nom_procedure.";"
+                        
+                        get_img_avant($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv);
+                        ?>
+                        
+
                     </td>
                     <td>
                         <?php echo '<strong>Image Après:</strong><br>'; ?>
