@@ -34,11 +34,15 @@ table, th, td {
     $infos_rdv=$_GET['infos_rdv'];
     $nom=$_GET['nom_client'];
 
-    function get_img_avant($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv){
+    function get_img($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv,$avant_apres_bool){
         
         $result= $db->query('SELECT * FROM `rendezvous` WHERE id_client="'.$client_id.'" AND date_rdv="'.$date_rdv.'" AND infos_rdv="'.$infos_rdv.'" AND nom_procedure="'.$nom_procedure.'"');
         foreach($result as $row){
-            print $row['img_avant']."<br>";
+            $img_url=str_replace("_","/",$row[$avant_apres_bool]);
+            echo '<img src='.$img_url.' width="300" height="400">';
+
+            return $img_url;
+        
         }
     }
 
@@ -71,22 +75,32 @@ table, th, td {
                     <td><?php echo '<strong>Date du rdv:</strong><br>'.$date_rdv.'';?></td>
                 </tr>
                 <tr>
-                    <td><?php echo '<strong>infos:</strong><br>'; ?></td>
+                    <td>
+                        <?php 
+                            echo '<strong>infos:</strong><br>'; 
+                            
+                            echo '<p>'.$infos_rdv.'</p>'
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>
                         <?php echo '<strong>Image Avant:</strong><br>';
-                        //rendezvous WHERE id_client=".$client_id." AND date_rdv=".$date_rdv." AND infos_rdv=".$infos_rdv." AND nom_procedure=".$nom_procedure."
 
-                        //"SELECT img_avant FROM rendezvous WHERE id_client=".$client_id."AND nom_procedure=".$nom_procedure.";"
+
+                        get_img($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv,'img_avant');
                         
-                        get_img_avant($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv);
                         ?>
                         
 
                     </td>
                     <td>
-                        <?php echo '<strong>Image Après:</strong><br>'; ?>
+                        <?php 
+                        echo '<strong>Image Après:</strong><br>'; 
+                        
+                        get_img($db,$client_id,$date_rdv,$nom_procedure,$infos_rdv,'img_apres');
+                        ?>
+
                     </td>
 
                 </tr>
