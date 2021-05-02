@@ -51,15 +51,16 @@ img{
         
         foreach($result as $row){
             
+
             $img_url=str_replace("_","/",$row[$avant_apres_bool]);
-            
             echo '<img id='.$row["id_img"].' src='.$img_url.' width="300" height="400">';
             
             //input to change image
             $upload_id="upload_id_".$row["id_img"].'_'.$avant_apres_bool;
             $submit_id="submit_".$row["id_img"]."_".$avant_apres_bool;
             $form_id='form_'.$row["id_img"].'_'.$avant_apres_bool; 
-            echo $form_id;
+            
+            
             echo '
             <form id='.$form_id.' style="display:none;" method="POST" enctype="multipart/form-data">
                 <input type="file" name='.$upload_id.' accept="imgs/*">
