@@ -22,6 +22,7 @@ img{
     display: block;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 5%;
 }
 </style>
 
@@ -47,13 +48,35 @@ img{
     function get_img($db,$client_id,$id_rdv,$avant_apres_bool){
         
         $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
+        
         foreach($result as $row){
             $img_url=str_replace("_","/",$row[$avant_apres_bool]);
-            print $img_url;
-            echo '<img  src='.$img_url.' width="300" height="400">';
             
-            return $img_url;
-        
+            echo '<img id='.$row["id_img"].' src='.$img_url.' width="300" height="400">';
+            
+            //input to change image
+            $upload_id="upload_id_".$row["id_img"].'_'.$avant_apres_bool;
+            $submit_id="submit_".$row["id_img"]."_".$avant_apres_bool;
+            
+            echo '
+            <form  method="POST" enctype="multipart/form-data">
+                <input type="file" name='.$upload_id.' accept="imgs/*">
+                <button type="submit" name='.$submit_id.'>ENVOYER</button>
+            </form>
+            ';
+
+            if(isset($_POST[$submit_id])){
+                $filename=$_FILES[$upload_id]['name'];
+
+                if($avant_apres_bool=='img_avant')
+                    $result= $db->query('UPDATE images 
+                                SET img_avant="imgs_'.$filename.'" WHERE id_img='.$row['id_img'].' ');
+                else
+                    $result= $db->query('UPDATE images SET img_apres="imgs_'.$filename.'" WHERE id_img='.$row['id_img'].';');
+
+                    header("Refresh:0");
+
+            }
         }
     }
 
@@ -71,6 +94,7 @@ img{
     <!--END_HEADER-->
     
 
+  
 
 
     <!--CENTER-->
@@ -102,9 +126,13 @@ img{
                         <?php echo '<strong>Image Avant:</strong><br>';
 
 
-                            get_img($db,$client_id,$id_rdv,'img_apres');
+                            get_img($db,$client_id,$id_rdv,'img_avant');
+                            
+                           
+
                         
                         ?>
+                          
                         
 
                     </td>
