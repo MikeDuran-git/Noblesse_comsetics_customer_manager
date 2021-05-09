@@ -53,7 +53,8 @@ img{
             
 
             $img_url=str_replace("_","/",$row[$avant_apres_bool]);
-            echo '<img id='.$row["id_img"].' src='.$img_url.' width="300" height="400">';
+            
+            echo '<img id=img_'.$row["id_img"].'_'.$avant_apres_bool.' src='.$img_url.' width="300" height="400">';
             
             //input to change image
             $upload_id="upload_id_".$row["id_img"].'_'.$avant_apres_bool;
@@ -66,7 +67,7 @@ img{
             <form id='.$form_id.' style="display:true;" method="POST" enctype="multipart/form-data">
                 <input style="display:none" type="file" name ='.$upload_id.' id='.$upload_id.' accept="imgs/*">
                 
-                <button style="display:none" name='.$select_img_id.' id='.$select_img_id.'>SELECTIONNER IMAGE</button>
+                <button style="display:none" type="submit" name='.$select_img_id.' id='.$select_img_id.'>SELECTIONNER IMAGE</button>
                 
                 <button style="display:none" type="submit" name='.$submit_id.' id='.$submit_id.'>ENVOYER</button>
             </form>
@@ -75,21 +76,36 @@ img{
             //the case we switch images.
             if(isset($_POST[$submit_id])){
                 $filename=$_FILES[$upload_id]['name'];
-
+                //change content of database
                 if($avant_apres_bool=='img_avant')
                     $result= $db->query('UPDATE images 
                                 SET img_avant="imgs_'.$filename.'" WHERE id_img='.$row['id_img'].' ');
                 else
                     $result= $db->query('UPDATE images SET img_apres="imgs_'.$filename.'" WHERE id_img='.$row['id_img'].';');
 
-                    header("Refresh:0");
+                //change content on website
+                echo '
+                <script>
+                    document.getElementById("img_'.$row["id_img"].'_'.$avant_apres_bool.'").src="imgs/'.$filename.'";
+                </script>
+                ';
             }
           
-          //the image is selected  
+          //the image is selected to be removed 
           if(isset($_POST[$select_img_id])){
-            print($select_img_id." CLICKED");
-    
-
+            //change content on the database
+            if($avant_apres_bool=='img_avant'){
+                $result= $db->query('UPDATE images SET img_avant="imgs_Empty.png" WHERE id_img='.$row['id_img'].';');
+            }
+            else{
+                $result= $db->query('UPDATE images SET img_apres="imgs_Empty.png" WHERE id_img='.$row['id_img'].';');
+            }
+            //change content on the page
+            echo '
+            <script>
+                document.getElementById("img_'.$row["id_img"].'_'.$avant_apres_bool.'").src="imgs/Empty.png";
+            </script>
+            ';
           }  
         }
     }
