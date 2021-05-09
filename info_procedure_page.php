@@ -59,12 +59,16 @@ img{
             $upload_id="upload_id_".$row["id_img"].'_'.$avant_apres_bool;
             $submit_id="submit_".$row["id_img"]."_".$avant_apres_bool;
             $form_id='form_'.$row["id_img"].'_'.$avant_apres_bool; 
+            $select_img_id='select_'.$row["id_img"].'_'.$avant_apres_bool;
             
-            
+
             echo '
-            <form id='.$form_id.' style="display:none;" method="POST" enctype="multipart/form-data">
-                <input type="file" name='.$upload_id.' accept="imgs/*">
-                <button type="submit" name='.$submit_id.'>ENVOYER</button>
+            <form id='.$form_id.' style="display:true;" method="POST" enctype="multipart/form-data">
+                <input style="display:none" type="file" name ='.$upload_id.' id='.$upload_id.' accept="imgs/*">
+                
+                <button style="display:none" name='.$select_img_id.' id='.$select_img_id.'>SELECTIONNER IMAGE</button>
+                
+                <button style="display:none" type="submit" name='.$submit_id.' id='.$submit_id.'>ENVOYER</button>
             </form>
             ';
 
@@ -79,12 +83,64 @@ img{
                     $result= $db->query('UPDATE images SET img_apres="imgs_'.$filename.'" WHERE id_img='.$row['id_img'].';');
 
                     header("Refresh:0");
-
             }
+          
+          //the image is selected  
+          if(isset($_POST[$select_img_id])){
+            print($select_img_id." CLICKED");
+    
+
+          }  
         }
     }
 
+    function show_only_select_img_button($counter){
+        
+            //hide datei_auswählen buttons
+            echo 'document.getElementById("upload_id_'.$counter.'_img_avant").style="display:none";';
+            echo 'document.getElementById("upload_id_'.$counter.'_img_apres").style="display:none";';
 
+            //hide envoyer button
+            echo 'document.getElementById("submit_'.$counter.'_img_avant").style="display:none";';
+            echo 'document.getElementById("submit_'.$counter.'_img_apres").style="display:none";';
+
+            //show selectionner button
+            echo 'document.getElementById("select_'.$counter.'_img_avant").style="display:true";';
+            echo 'document.getElementById("select_'.$counter.'_img_apres").style="display:true";';
+
+
+
+    }
+
+    function hide_select_envoyer_datei_auswahl_button($counter){
+          //hide datei_auswählen button
+          echo 'document.getElementById("upload_id_'.$counter.'_img_avant").style="display:none";';
+          echo 'document.getElementById("upload_id_'.$counter.'_img_apres").style="display:none";';
+
+          //hide envoyer button
+          echo 'document.getElementById("submit_'.$counter.'_img_avant").style="display:none";';
+          echo 'document.getElementById("submit_'.$counter.'_img_apres").style="display:none";';
+
+          //hide selectionner button
+          echo 'document.getElementById("select_'.$counter.'_img_avant").style="display:none";';
+          echo 'document.getElementById("select_'.$counter.'_img_apres").style="display:none";';
+    }
+
+    function show_envoyer_and_datei_auswahl_button($counter){
+        //show datei_auswählen button
+        echo 'document.getElementById("upload_id_'.$counter.'_img_avant").style="display:true";';
+        echo 'document.getElementById("upload_id_'.$counter.'_img_apres").style="display:true";';
+       
+        //show envoyer button
+        echo 'document.getElementById("submit_'.$counter.'_img_avant").style="display:true";';
+        echo 'document.getElementById("submit_'.$counter.'_img_apres").style="display:true";';
+       
+        //hide selectionner button
+        echo 'document.getElementById("select_'.$counter.'_img_avant").style="display:none";';
+        echo 'document.getElementById("select_'.$counter.'_img_apres").style="display:none";';
+                   
+          
+    }
 
 
     ?>
@@ -146,15 +202,22 @@ img{
             </table>
 
             <div id="button_add_rm" style="display: none">
-                <button>AJOUTER UNE IMAGE AVANT</button>
-                <button>AJOUTER UNE IMAGE APRES</button>
-            </div>
+                <button id="button_add_avant_img">
+                    AJOUTER UNE IMAGE AVANT
+                </button>
 
+                <button id="button_add_apres_img">
+                    AJOUTER UNE IMAGE APRES
+                </button>
+                
+                <button id="button_rm_img" onclick="remove_img()">
+                    ENLEVER UNE IMAGE
+                </button>
+
+            </div>
             
         </div>
         <!--Infos of the rdv END-->
-
-
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients" >
@@ -178,25 +241,42 @@ img{
 
 <script>
 
-function modify_content(){
-    
-    document.getElementById("button_add_rm").style="display:true;";
-    document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()" >Sauvegarder</button>';
+//remove image
+function remove_img(){
     <?php
        $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+       
        $counter->execute();
        $counter = $counter->fetch();
        $counter=$counter['c'];
        while($counter > 0){
-            echo 'document.getElementById("form_'.$counter.'_img_avant").style="display:true";';
-            echo 'document.getElementById("form_'.$counter.'_img_apres").style="display:true";';
+            show_only_select_img_button($counter);
+            $counter-=1;
+       }
+    ?>
 
+}
+
+// prints the buttons to change the content of img
+function modify_content(){
+    
+    document.getElementById("button_add_rm").style="display:true;";
+    document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()">Sauvegarder</button>';
+    <?php
+       $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+       
+       $counter->execute();
+       $counter = $counter->fetch();
+       $counter=$counter['c'];
+       
+       while($counter > 0){
+            show_envoyer_and_datei_auswahl_button($counter);
             $counter-=1;
        }
     ?>
 }
 
-
+//removes all buttons to change the imgs.
 function save_content(){
     document.getElementById("button_add_rm").style="display:none;";
     document.getElementById("bouton_clients").innerHTML='<button onclick="modify_content()">Modifier</button>';
@@ -206,12 +286,12 @@ function save_content(){
        $counter = $counter->fetch();
        $counter=$counter['c'];
        while($counter > 0){
-            echo 'document.getElementById("form_'.$counter.'_img_avant").style="display:none";';
-            echo 'document.getElementById("form_'.$counter.'_img_apres").style="display:none";';
-
+           hide_select_envoyer_datei_auswahl_button($counter);
             $counter-=1;
        }
     ?>
+
+    alert("contenu sauvegardé");
 
 }
 
