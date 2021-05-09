@@ -89,6 +89,8 @@ img{
                     document.getElementById("img_'.$row["id_img"].'_'.$avant_apres_bool.'").src="imgs/'.$filename.'";
                 </script>
                 ';
+                echo '<script>alert("contenu sauvegardé");</script>';
+
             }
           
           //the image is selected to be removed 
@@ -106,7 +108,10 @@ img{
                 document.getElementById("img_'.$row["id_img"].'_'.$avant_apres_bool.'").src="imgs/Empty.png";
             </script>
             ';
+            echo '<script>alert("contenu sauvegardé");</script>';
+
           }  
+
         }
     }
 
@@ -219,12 +224,12 @@ img{
 
             <div id="button_add_rm" style="display: none">
                 <button id="button_add_avant_img">
-                    AJOUTER UNE IMAGE AVANT
+                    AJOUTER UNE IMAGE AVANT ET APRES
                 </button>
 
-                <button id="button_add_apres_img">
-                    AJOUTER UNE IMAGE APRES
-                </button>
+                <button id="button_mod_img" onclick="mod_img()">
+                    CHANGER UNE IMAGE
+                </button>                
                 
                 <button id="button_rm_img" onclick="remove_img()">
                     ENLEVER UNE IMAGE
@@ -257,8 +262,10 @@ img{
 
 <script>
 
+
 //remove image
 function remove_img(){
+    document.getElementById("button_add_rm").style="display:none";
     <?php
        $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
        
@@ -273,11 +280,8 @@ function remove_img(){
 
 }
 
-// prints the buttons to change the content of img
-function modify_content(){
-    
-    document.getElementById("button_add_rm").style="display:true;";
-    document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()">Sauvegarder</button>';
+function mod_img(){
+    document.getElementById("button_add_rm").style="display:none";
     <?php
        $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
        
@@ -290,6 +294,12 @@ function modify_content(){
             $counter-=1;
        }
     ?>
+}
+// prints the buttons to change the content of img
+function modify_content(){
+    //show content that can be modified
+    document.getElementById("button_add_rm").style="display:true;";
+    document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()">Sauvegarder</button>';
 }
 
 //removes all buttons to change the imgs.
