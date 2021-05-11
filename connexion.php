@@ -7,7 +7,6 @@
 
     try{
         $db=new PDO("mysql:host=$host;dbname=$db_name",$username,$password);
-        echo 'conexxion success</br>';
     }
     catch(Exception $e){
         print $e->getMessage();

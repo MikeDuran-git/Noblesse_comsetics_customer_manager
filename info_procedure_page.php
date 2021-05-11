@@ -10,21 +10,21 @@
 
 <style>
 
-#infos_rdv{
-    margin-top: 10%;
-}
+    #infos_rdv{
+        margin-top: 10%;
+    }
 
-table, th, td {
-    border: 1px solid black;
-    padding: 5px;
-}
+    table, th, td {
+        border: 1px solid black;
+        padding: 5px;
+    }
 
-img{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5%;
-}
+    img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+    }
 </style>
 
 <body style="background-color: burlywood;">
@@ -36,6 +36,17 @@ img{
     session_start();
     $client_id=$_GET['client_id'];
 
+    //get URL
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+            $url = "https://";   
+        else  
+            $url = "http://";   
+        // Append the host(domain name, ip) to the URL.   
+        $url.= $_SERVER['HTTP_HOST'];   
+        // Append the requested resource location to the URL   
+        $url.= $_SERVER['REQUEST_URI'];    
+ 
+
     //Client Data
     
     
@@ -45,7 +56,7 @@ img{
     $nom=$_GET['nom_client'];
     $id_rdv=$_GET['id_rdv'];
     
-    function get_img($db,$client_id,$id_rdv,$avant_apres_bool){
+        function get_img($db,$client_id,$id_rdv,$avant_apres_bool){
         
         $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
         
@@ -93,25 +104,26 @@ img{
 
             }
           
-          //the image is selected to be removed 
-          if(isset($_POST[$select_img_id])){
-            //change content on the database
-            if($avant_apres_bool=='img_avant'){
-                $result= $db->query('UPDATE images SET img_avant="imgs_Empty.png" WHERE id_img='.$row['id_img'].';');
-            }
-            else{
-                $result= $db->query('UPDATE images SET img_apres="imgs_Empty.png" WHERE id_img='.$row['id_img'].';');
-            }
-            //change content on the page
-            echo '
-            <script>
-                document.getElementById("img_'.$row["id_img"].'_'.$avant_apres_bool.'").src="imgs/Empty.png";
-            </script>
-            ';
-            echo '<script>alert("contenu sauvegardé");</script>';
+            //the image is selected to be removed 
+            if(isset($_POST[$select_img_id])){
+                //change content on the database
+                if($avant_apres_bool=='img_avant'){
+                    $result= $db->query('UPDATE images SET img_avant="imgs_Empty.png" WHERE id_img='.$row['id_img'].';');
+                }
+                else{
+                    $result= $db->query('UPDATE images SET img_apres="imgs_Empty.png" WHERE id_img='.$row['id_img'].';');
+                }
+                //change content on the page
+                echo '
+                <script>
+                    document.getElementById("img_'.$row["id_img"].'_'.$avant_apres_bool.'").src="imgs/Empty.png";
+                </script>
+                ';
+                echo '<script>alert("contenu sauvegardé");</script>';
 
-          }  
+            }  
 
+            
         }
     }
 
@@ -163,6 +175,21 @@ img{
           
     }
 
+    function add_empty_row_to_db($db,$client_id,$id_rdv){
+        //get the maximum value of all ids.
+            $counter= $db->prepare("SELECT MAX(id_img) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+                    
+            $counter->execute();
+            $counter = $counter->fetch();
+            $counter=$counter['c'];
+            $new_img_id=$counter+=1;
+                
+        //set the sql request
+            $sql= 'INSERT INTO images (id_client, id_rdv, id_img, img_avant, img_apres) VALUES ('.$client_id.','.$id_rdv.','.$new_img_id.',"imgs_Empty.png","imgs_Empty.png");';
+                        
+        //modify database
+            $db->query($sql);
+    }
 
     ?>
 <!--DATABASE CONNECTION END-->
@@ -187,45 +214,61 @@ img{
 
         <!--Infos of the rdv-->
         <div id= "infos_rdv">
-
             <table style="width:100%">
                 <tr>
-                    <td><?php echo '<strong>Procédure effectuée: </strong><br>'.$nom_procedure.'';?></td>
-                    <td><?php echo '<strong>Date du rdv:</strong><br>'.$date_rdv.'';?></td>
+                    <td>
+                        <?php 
+                            echo '<strong>Procédure effectuée: </strong><br>'.$nom_procedure.'';
+                        ?>
+                    </td>
+                    <td>
+                        <?php 
+                            echo '<strong>Date du rdv:</strong><br>'.$date_rdv.'';
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td>
                         <?php 
                             echo '<strong>infos:</strong><br>'; 
-                            
                             echo '<p>'.$infos_rdv.'</p>'
                         ?>
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <?php echo '<strong>Image Avant:</strong><br>';
-
-
-                            get_img($db,$client_id,$id_rdv,'img_avant');
-                        
-                        ?>
-
-                    </td>
-                    <td>
-                        <?php 
-                            echo '<strong>Image Après:</strong><br>'; 
-                        
-                            get_img($db,$client_id,$id_rdv,'img_apres');
-                        ?>
-                    </td>
                 </tr>
+            </table>
+            <table id="images" style="width:100%">
+                <td>  
+                    <strong>Image Avant:</strong><br>
+                    <div id="imgs_avant_function">
+                    <?php
+                    get_img($db,$client_id,$id_rdv,"img_avant");
+                    ?>
+                    </div>
+                    
+                </td>
+                <td >
+                    <strong>Image Après:</strong><br>
+                    <div id="imgs_apres_function">
+                    <?php
+                    get_img($db,$client_id,$id_rdv,"img_apres");
+                    ?>
+                    </div>
+ 
+                </td>
+
             </table>
 
             <div id="button_add_rm" style="display: none">
-                <button id="button_add_avant_img">
-                    AJOUTER UNE IMAGE AVANT ET APRES
-                </button>
+                
+                <form style="display:true;" method="POST" enctype="multipart/form-data">
+
+                    <button type="submit" name='add_empty'> 
+                        AJOUTER UNE IMAGE AVANT ET APRES
+                    </button>
+                </form>                   
+                </button>                
 
                 <button id="button_mod_img" onclick="mod_img()">
                     CHANGER UNE IMAGE
@@ -258,11 +301,20 @@ img{
 </footer>
 <!--END_FOOTER-->
 
+<script type="text/javascript" src="jquery-1.3.2.js"> </script>
 
 
 <script>
+    <?php
+    #add empty row
+    if(isset($_POST['add_empty'])){
+        echo 'document.getElementById("button_add_rm").style="display:none";';
+        add_empty_row_to_db($db,$client_id,$id_rdv);
 
-
+        echo "location.replace('".$url."')";
+    }
+    ?>
+     
 //remove image
 function remove_img(){
     document.getElementById("button_add_rm").style="display:none";
@@ -280,6 +332,7 @@ function remove_img(){
 
 }
 
+//change specific image
 function mod_img(){
     document.getElementById("button_add_rm").style="display:none";
     <?php
