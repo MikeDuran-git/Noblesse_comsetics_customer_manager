@@ -34,7 +34,7 @@
     <?php
     include 'connexion.php';
     session_start();
-    $client_id=$_GET['client_id'];
+
 
     //get URL
         if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
@@ -48,13 +48,23 @@
  
 
     //Client Data
-    
-    
-    $date_rdv=$_GET['date_rdv'];
-    $nom_procedure=$_GET['nom_procedure'];
-    $infos_rdv=$_GET['infos_rdv'];
-    $nom=$_GET['nom_client'];
+    $client_id=$_GET['client_id'];
     $id_rdv=$_GET['id_rdv'];
+    $nom=$_GET['nom_client'];
+    
+    $result= $db->prepare("SELECT * FROM rendezvous where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+    $result->setFetchMode(PDO:: FETCH_OBJ);
+    $result->execute(); 
+    while($row = $result->fetch()){
+        $date_rdv=$row->date_rdv;
+        $nom_procedure=$row->nom_procedure;
+        $infos_rdv=$row->infos_rdv;
+    }
+    
+    // $date_rdv=$_GET['date_rdv'];
+    // $nom_procedure=$_GET['nom_procedure'];
+    // $infos_rdv=$_GET['infos_rdv'];
+    
     
     function get_img($db,$client_id,$id_rdv,$avant_apres_bool,$url){
         
@@ -232,43 +242,60 @@
             $db->query($sql);
     }
 
+    function change_date($db,$client_id,$id_rdv,$new_date){
+        $sql='UPDATE rendezvous
+              SET  date_rdv='.$new_date.' WHERE id_client='.$client_id.' 
+              AND id_rdv='.$id_rdv.';';
+        $db->query($sql);
+        echo 'alert("Date modifiée.");';
+    }
+
     ?>
 <!--DATABASE CONNECTION END-->
 
     <!--HEADER-->
     <header id="main_header">
-
         <h1>Info du Rendezvous de <?php echo $nom;?></h1>
     </header>
     <!--END_HEADER-->
     
-
-  
-
-
     <!--CENTER-->
-    <div class="container" id="main_center">
+    <div class="container" id="main_center" >
         <?php
             $infos_to_send="location.href='info_client_page.php?client_id=".$client_id."'";
             echo "<input type='button' onClick=".$infos_to_send." value='Retour info du client'>";
         ?>
 
         <!--Infos of the rdv-->
-        <div id= "infos_rdv">
+        <div id= "infos_rdv" style="margin-top:2%;">
             <table style="width:100%">
                 <tr>
                     <td>
                         <?php 
                             echo '<strong>Procédure effectuée: </strong><br>'.$nom_procedure.'';
                         ?>
+
                     </td>
 
                 </tr>
                 <tr>
                     <td>
                         <?php 
-                            echo '<strong>Date du rdv:</strong><br>'.$date_rdv.'';
+                            echo '<strong>Date du rdv:</strong><br>
+                            <p id="actual_date">'.$date_rdv.'</p>';
                         ?>
+                        <form style="display:true;" method="POST" enctype="multipart/form-data">
+                            <!-- button to display the alter date input -->
+                            <button type="submit" name='change_date' id="change_date_button_id">
+                                Changer la Date 
+                            </button>
+                            <!-- button to change the date  -->
+                            <div id="date_input" style="display:none;">
+                                <input type="date" name="date_input_submit">
+                                <input type="submit" name="date_submit">
+                            </div>
+                            
+                        </form>     
                     </td>
                 </tr>
 
@@ -334,7 +361,6 @@
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients" >
         <button onclick="modify_content()">Modifier</button>
-
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
     
@@ -355,10 +381,39 @@
     if(isset($_POST['add_empty'])){
         echo 'document.getElementById("button_add_rm").style="display:none";';
         add_empty_row_to_db($db,$client_id,$id_rdv);
-
         echo "location.replace('".$url."')";
     }
+#change the date
+    if(isset($_POST['change_date'])){
+        echo 'document.getElementById("date_input").style="display:true";';
+        echo 'hide_change_date_button();';
+    }
+
+    if(isset($_POST['date_submit'])){
+        
+        $new_date=$_POST['date_input_submit'];
+        $new_date=date("Y-m-d",strtotime($new_date));
+
+        echo 'document.getElementById("actual_date").innerHTML="<strong>'.$new_date.'</strong>";';
+
+        change_date($db,$client_id,$id_rdv,$new_date);
+
+
+    }
+
+
+    
+
 ?>
+//hide change_date_button
+function hide_change_date_button(){
+    document.getElementById("change_date_button_id").style="display:none";
+}
+
+//show change_date_button
+function show_change_date_button(){
+    document.getElementById("change_date_button_id").style="display:true";
+}
 //remove a row from db
 function show_row_rm_buttons(){
     document.getElementById("button_add_rm").style="display:none";

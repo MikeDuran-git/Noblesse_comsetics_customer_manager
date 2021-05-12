@@ -39,9 +39,6 @@ table, th, td {
         while($row = $result->fetch()){
             $counter-=1;
             $infos_to_send='client_id='.$client_id.
-                           '&date_rdv='.$row->date_rdv.
-                           '&infos_rdv='.$row->infos_rdv.
-                           '&nom_procedure='.$row->nom_procedure.
                            '&nom_client='.$nom.
                            '&id_rdv='.$row->id_rdv.
                            '';
