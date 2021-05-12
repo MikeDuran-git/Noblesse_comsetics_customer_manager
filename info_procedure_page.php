@@ -85,7 +85,7 @@
                 
                 if($avant_apres_bool=="img_avant"){
                     echo '
-                    <button style="display:true; position: float;" type="submit" name='.$rm_row_id.' id='.$rm_row_id.'>Enlever cette ligne <strong>(image avant ET après)</strong></button>
+                    <button style="display:none; position: float;" type="submit" name='.$rm_row_id.' id='.$rm_row_id.'>Enlever cette ligne <strong>(image avant ET après)</strong></button>
                     ';
                 }
             echo
@@ -149,7 +149,22 @@
         }
     }
 
-    function show_rm_img_buttons($counter){
+    function show_rm_img_buttons($db,$client_id,$id_rdv){
+        
+        $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
+        foreach($result as $row){
+            $rm_row_id='row_id_'.$client_id.'_'.$id_rdv.'_'.$row['id_img'];
+            echo 'document.getElementById("'.$rm_row_id.'").style="display:true";';
+        }
+
+    }
+    function hide_rm_img_buttons($db,$client_id,$id_rdv){
+        
+        $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
+        foreach($result as $row){
+            $rm_row_id='row_id_'.$client_id.'_'.$id_rdv.'_'.$row['id_img'];
+            echo 'document.getElementById("'.$rm_row_id.'").style="display:none";';
+        }
 
     }
 
@@ -344,17 +359,9 @@
 function show_row_rm_buttons(){
     document.getElementById("button_add_rm").style="display:none";
     <?php
-       $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
-       
-       $counter->execute();
-       $counter = $counter->fetch();
-       $counter=$counter['c'];
-       
-       while($counter > 0){
-            show_rm_img_buttons($counter);
-            $counter-=1;
-       }
+        show_rm_img_buttons($db,$client_id,$id_rdv);
     ?>
+    modify_content();
 }
 
 //remove image
