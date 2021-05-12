@@ -56,7 +56,7 @@
     $nom=$_GET['nom_client'];
     $id_rdv=$_GET['id_rdv'];
     
-        function get_img($db,$client_id,$id_rdv,$avant_apres_bool){
+    function get_img($db,$client_id,$id_rdv,$avant_apres_bool,$url){
         
         $result= $db->query('SELECT * FROM `images` WHERE id_client="'.$client_id.'" AND id_rdv="'.$id_rdv.'"');
         
@@ -64,15 +64,16 @@
             
 
             $img_url=str_replace("_","/",$row[$avant_apres_bool]);
-            
-            echo '<img id=img_'.$row["id_img"].'_'.$avant_apres_bool.' src='.$img_url.' width="300" height="400">';
-            
+
             //input to change image
             $upload_id="upload_id_".$row["id_img"].'_'.$avant_apres_bool;
             $submit_id="submit_".$row["id_img"]."_".$avant_apres_bool;
             $form_id='form_'.$row["id_img"].'_'.$avant_apres_bool; 
             $select_img_id='select_'.$row["id_img"].'_'.$avant_apres_bool;
-            
+            $rm_row_id='row_id_'.$client_id.'_'.$id_rdv.'_'.$row['id_img'];
+
+
+            echo '<img id=img_'.$row["id_img"].'_'.$avant_apres_bool.' src='.$img_url.' width="300" height="400">';
 
             echo '
             <form id='.$form_id.' style="display:true;" method="POST" enctype="multipart/form-data">
@@ -80,8 +81,15 @@
                 
                 <button style="display:none" type="submit" name='.$select_img_id.' id='.$select_img_id.'>SELECTIONNER IMAGE</button>
                 
-                <button style="display:none" type="submit" name='.$submit_id.' id='.$submit_id.'>ENVOYER</button>
-            </form>
+                <button style="display:none" type="submit" name='.$submit_id.' id='.$submit_id.'>ENVOYER</button>';
+                
+                if($avant_apres_bool=="img_avant"){
+                    echo '
+                    <button style="display:true; position: float;" type="submit" name='.$rm_row_id.' id='.$rm_row_id.'>Enlever cette ligne <strong>(image avant ET après)</strong></button>
+                    ';
+                }
+            echo
+            '</form>
             ';
 
             //the case we switch images.
@@ -121,10 +129,28 @@
                 ';
                 echo '<script>alert("contenu sauvegardé");</script>';
 
-            }  
+            }
 
-            
+            //delete row
+            if(isset($_POST[$rm_row_id])){
+                 $sql="DELETE FROM images WHERE id_client=".$client_id." AND id_rdv=".$id_rdv." AND id_img=".$row['id_img'];
+                 $db->query($sql);
+                $img_id_avant='img_'.$row["id_img"].'_img_avant';
+                $img_id_apres='img_'.$row["id_img"].'_img_apres';
+                echo '
+                <script>
+                    document.getElementById("'.$form_id.'").remove();
+                    document.getElementById("'.$img_id_avant.'").remove();
+                    document.getElementById("'.$img_id_apres.'").remove();
+                </script>
+                ';
+                
+            }
         }
+    }
+
+    function show_rm_img_buttons($counter){
+
     }
 
     function show_only_select_img_button($counter){
@@ -243,7 +269,7 @@
                     <strong>Image Avant:</strong><br>
                     <div id="imgs_avant_function">
                     <?php
-                    get_img($db,$client_id,$id_rdv,"img_avant");
+                    get_img($db,$client_id,$id_rdv,"img_avant",$url);
                     ?>
                     </div>
                     
@@ -252,7 +278,7 @@
                     <strong>Image Après:</strong><br>
                     <div id="imgs_apres_function">
                     <?php
-                    get_img($db,$client_id,$id_rdv,"img_apres");
+                    get_img($db,$client_id,$id_rdv,"img_apres",$url);
                     ?>
                     </div>
  
@@ -263,12 +289,15 @@
             <div id="button_add_rm" style="display: none">
                 
                 <form style="display:true;" method="POST" enctype="multipart/form-data">
-
                     <button type="submit" name='add_empty'> 
                         AJOUTER UNE IMAGE AVANT ET APRES
                     </button>
                 </form>                   
                 </button>                
+                
+                <button id="button_rm_row" onclick="show_row_rm_buttons()">
+                    ENLEVER UNE IMAGE AVANT ET APRES
+                </button>  
 
                 <button id="button_mod_img" onclick="mod_img()">
                     CHANGER UNE IMAGE
@@ -301,20 +330,33 @@
 </footer>
 <!--END_FOOTER-->
 
-<script type="text/javascript" src="jquery-1.3.2.js"> </script>
-
-
 <script>
-    <?php
-    #add empty row
+//add empty row to database
+<?php
     if(isset($_POST['add_empty'])){
         echo 'document.getElementById("button_add_rm").style="display:none";';
         add_empty_row_to_db($db,$client_id,$id_rdv);
 
         echo "location.replace('".$url."')";
     }
+?>
+//remove a row from db
+function show_row_rm_buttons(){
+    document.getElementById("button_add_rm").style="display:none";
+    <?php
+       $counter= $db->prepare("SELECT COUNT(*) as c from images where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+       
+       $counter->execute();
+       $counter = $counter->fetch();
+       $counter=$counter['c'];
+       
+       while($counter > 0){
+            show_rm_img_buttons($counter);
+            $counter-=1;
+       }
     ?>
-     
+}
+
 //remove image
 function remove_img(){
     document.getElementById("button_add_rm").style="display:none";
