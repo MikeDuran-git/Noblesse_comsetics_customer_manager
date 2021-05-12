@@ -262,12 +262,16 @@
                             echo '<strong>Procédure effectuée: </strong><br>'.$nom_procedure.'';
                         ?>
                     </td>
+
+                </tr>
+                <tr>
                     <td>
                         <?php 
                             echo '<strong>Date du rdv:</strong><br>'.$date_rdv.'';
                         ?>
                     </td>
                 </tr>
+
                 <tr>
                     <td>
                         <?php 
@@ -416,7 +420,7 @@ function save_content(){
        while($counter > 0){
            hide_select_envoyer_datei_auswahl_button($counter);
             $counter-=1;
-       }
+       } 
     ?>
 
     alert("contenu sauvegardé");
