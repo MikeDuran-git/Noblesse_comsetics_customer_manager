@@ -25,6 +25,12 @@
         margin-right: auto;
         margin-top: 5%;
     }
+    /* JUST FOR THIS DEMO */
+
+textarea{  
+  width: 100%;
+}
+
 </style>
 
 <body style="background-color: burlywood;">
@@ -289,13 +295,10 @@
 
                             <!-- button to change the procedure  -->
                             <div id="procedure_input" style="display:none;">
-                                
-
                                 <input id="procedure_input_sub" name="procedure_input_submit" type="text" onkeyup="Expand(this);" >
-
-
                                 <input type="submit" name="procedure_submit">
                             </div>
+                        </form>
                     </td>
 
                 </tr>
@@ -324,8 +327,25 @@
                     <td>
                         <?php 
                             echo '<strong>infos:</strong><br>'; 
-                            echo '<p>'.$infos_rdv.'</p>'
                         ?>
+                        
+                        <?php
+                            echo "<div id='info_rdv_content'>
+                                <p>".$infos_rdv."</p>
+                                </div>";
+                        ?>
+
+                        <form style="display:true;" method="POST" enctype="multipart/form-data">
+                            
+                            <!-- button to display the alter info_rdv input -->
+                            <button type="submit" name='change_info_rdv' id="change_info_rdv_button_id" style="display:true;">
+                                Changer les Informations du Rendezvous
+                            </button>
+                                <!-- button to change the info_rdv  -->
+                                <div id="info_rdv_input" style="display:true;">
+                                <input type="submit" name="info_rdv_submit">
+                            </div>
+                        </form>
                     </td>
                 </tr>
                 <tr>
@@ -400,7 +420,7 @@
         add_empty_row_to_db($db,$client_id,$id_rdv);
         echo "location.replace('".$url."')";
     }
-#change the date
+    #change the date
     if(isset($_POST['change_date'])){
         echo 'document.getElementById("date_input").style="display:true";';
         #echo 'hide_change_date_button();';
@@ -412,7 +432,7 @@
         echo 'document.getElementById("actual_date").innerHTML="'.$new_date.'";';
         change_date($db,$client_id,$id_rdv,$new_date);
     }
-#change procedure name
+    #change procedure name
     if(isset($_POST['change_procedure_name'])){
         echo 'document.getElementById("procedure_input").style="display:true";';
         echo 'document.getElementById("change_procedure_name_button_id").style="display:none";';        
@@ -427,13 +447,34 @@
         #change the name of the procedure to the database
         change_procedure($db,$client_id,$id_rdv,$new_procedure_name);
     }
-    
 
+    # change the infos of the rdv:
+    if(isset($_POST['change_info_rdv'])){
+        echo 'document.getElementById("info_rdv_content").innerHTML = "<textarea rows=9 >'.$infos_rdv.'</textarea>";';
+    }
+
+    if(isset($_POST['info_rdv_submit'])){
+        #get the content of the textarea
+        #$new_info_rdv=$_POST['new_textarea'];
+        #add the new name procedure to the html
+        #echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info_rdv.'</p>";';
+
+        #change the name of the procedure to the database
+    }
 ?>
 //expand the size of the input text 
 function Expand(obj){
       if (!obj.savesize) obj.savesize=obj.size;
       obj.size=Math.max(obj.savesize,obj.value.length);
+}
+
+function hide_change_info_rdv_button(){
+    alert("hide_change_info_rdv_button clicked")
+}
+
+function show_change_info_rdv_button(){
+    alert("show_change_info_rdv_button clicked")
+
 }
 
 function hide_change_name_procedure_button(){
@@ -523,6 +564,22 @@ function save_content(){
     alert("contenu sauvegardé");
 
 }
+
+//FUNCTION TO MAKE THE TEXTAREA ADAPT TO CONTENT
+var autoExpand = function (field) {
+    // Reset field height
+    field.style.height = 'inherit';
+    // Get the computed styles for the element
+    var computed = window.getComputedStyle(field);
+    // Calculate the height
+    var height = field.scrollHeight;
+    field.style.height = height + 'px';
+};
+//EVENT LISTENER FOR THE TEXTAREA MODIFICATION
+document.addEventListener('input', function (event) {
+if (event.target.tagName.toLowerCase() !== 'textarea') return;
+autoExpand(event.target);
+}, false);
 
 </script>
 
