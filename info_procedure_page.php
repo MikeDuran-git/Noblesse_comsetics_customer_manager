@@ -28,9 +28,8 @@
     /* JUST FOR THIS DEMO */
 
 textarea{  
-  width: 100%;
-  white-space: normal;
-
+    width: 100%;
+    white-space:normal !important;
 }
 
 </style>
@@ -345,12 +344,12 @@ textarea{
                                 </div>";
                         ?>
                             <!-- button to display the alter info_rdv input -->
-                            <button type="submit" name='change_info_rdv' id="change_info_rdv_button_id" style="display:true;">
+                            <button type="submit" name='change_info_rdv' id="change_info_rdv_button_id" style="display:none;">
                                 Changer les Informations du Rendezvous
                             </button>
 
                             <!-- button to change the info_rdv  -->
-                            <div id="info_rdv_input" style="display:true;">
+                            <div id="info_rdv_input" style="display:none;">
                                 <input type="submit" name="info_rdv_submit">
                             </div>
                         </form>
@@ -458,6 +457,8 @@ textarea{
 
     # change the infos of the rdv:
     if(isset($_POST['change_info_rdv'])){
+        echo 'document.getElementById("info_rdv_input").style ="display:true;";
+        ';
         echo "set_text_area();";
         echo 'hide_change_info_rdv_button();';
     }
@@ -465,18 +466,19 @@ textarea{
     if(isset($_POST['info_rdv_submit'])){
       
         #get the content of the textarea
-        #echo "var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;";
 
         $new_info= $_POST['my_text_id'];
-        #echo $new_info;
 
         #add the new name procedure to the html
         echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info.'</p>";';
+
         #change the name of the procedure to the database
+        change_info_rdv($db,$client_id,$id_rdv,$new_info);
+
     }
 ?>
 function set_text_area(){
-    document.getElementById("info_rdv_content").innerHTML = '<textarea rows=9 name="my_text_id"><?php echo $infos_rdv?></textarea>';
+    document.getElementById("info_rdv_content").innerHTML = '<br><textarea rows=9 name="my_text_id"  wrap="hard"><?php echo $infos_rdv?></textarea></br>';
 
     var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;
 
@@ -493,7 +495,7 @@ function hide_change_info_rdv_button(){
     document.getElementById("change_info_rdv_button_id").style ="display:none;";
 }
 function show_change_info_rdv_button(){
-    alert("show_change_info_rdv_button clicked")
+    document.getElementById("change_info_rdv_button_id").style="display:true";
 
 }
 
@@ -563,6 +565,8 @@ function modify_content(){
     document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()">Sauvegarder</button>';
     show_change_date_button();
     show_change_name_procedure_button();
+    show_change_info_rdv_button();
+
 }
 
 //removes all buttons to change the imgs.
@@ -581,6 +585,8 @@ function save_content(){
     ?>
     hide_change_date_button();
     hide_change_name_procedure_button();
+    hide_change_info_rdv_button();
+
     alert("contenu sauvegardé");
 
 }
