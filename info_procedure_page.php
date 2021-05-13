@@ -29,6 +29,8 @@
 
 textarea{  
   width: 100%;
+  white-space: normal;
+
 }
 
 </style>
@@ -257,6 +259,12 @@ textarea{
               AND id_rdv='.$id_rdv.';';
         $db->query($sql);
     }
+    function change_info_rdv($db,$client_id,$id_rdv,$new_info){
+        $sql='UPDATE rendezvous
+        SET  infos_rdv="'.$new_info.'" WHERE id_client='.$client_id.' 
+        AND id_rdv='.$id_rdv.';';
+        $db->query($sql);
+    }
 
     ?>
 <!--DATABASE CONNECTION END-->
@@ -329,20 +337,20 @@ textarea{
                             echo '<strong>infos:</strong><br>'; 
                         ?>
                         
-                        <?php
-                            echo "<div id='info_rdv_content'>
-                                <p>".$infos_rdv."</p>
-                                </div>";
-                        ?>
 
                         <form style="display:true;" method="POST" enctype="multipart/form-data">
-                            
+                        <?php
+                            echo "<div id='info_rdv_content'>
+                                    <p>".$infos_rdv."</p>
+                                </div>";
+                        ?>
                             <!-- button to display the alter info_rdv input -->
                             <button type="submit" name='change_info_rdv' id="change_info_rdv_button_id" style="display:true;">
                                 Changer les Informations du Rendezvous
                             </button>
-                                <!-- button to change the info_rdv  -->
-                                <div id="info_rdv_input" style="display:true;">
+
+                            <!-- button to change the info_rdv  -->
+                            <div id="info_rdv_input" style="display:true;">
                                 <input type="submit" name="info_rdv_submit">
                             </div>
                         </form>
@@ -450,18 +458,31 @@ textarea{
 
     # change the infos of the rdv:
     if(isset($_POST['change_info_rdv'])){
-        echo 'document.getElementById("info_rdv_content").innerHTML = "<textarea rows=9 >'.$infos_rdv.'</textarea>";';
+        echo "set_text_area();";
+        echo 'hide_change_info_rdv_button();';
     }
 
     if(isset($_POST['info_rdv_submit'])){
+      
         #get the content of the textarea
-        #$new_info_rdv=$_POST['new_textarea'];
-        #add the new name procedure to the html
-        #echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info_rdv.'</p>";';
+        #echo "var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;";
 
+        $new_info= $_POST['my_text_id'];
+        #echo $new_info;
+
+        #add the new name procedure to the html
+        echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info.'</p>";';
         #change the name of the procedure to the database
     }
 ?>
+function set_text_area(){
+    document.getElementById("info_rdv_content").innerHTML = '<textarea rows=9 name="my_text_id"><?php echo $infos_rdv?></textarea>';
+
+    var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;
+
+    
+}
+
 //expand the size of the input text 
 function Expand(obj){
       if (!obj.savesize) obj.savesize=obj.size;
@@ -469,9 +490,8 @@ function Expand(obj){
 }
 
 function hide_change_info_rdv_button(){
-    alert("hide_change_info_rdv_button clicked")
+    document.getElementById("change_info_rdv_button_id").style ="display:none;";
 }
-
 function show_change_info_rdv_button(){
     alert("show_change_info_rdv_button clicked")
 
