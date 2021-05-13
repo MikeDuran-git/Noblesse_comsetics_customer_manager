@@ -244,7 +244,12 @@
               SET  date_rdv="'.$new_date.'" WHERE id_client='.$client_id.' 
               AND id_rdv='.$id_rdv.';';
         $db->query($sql);
-        echo 'alert("Date modifiée.");';
+    }
+    function change_procedure($db,$client_id,$id_rdv,$new_nom_procedure){
+        $sql='UPDATE rendezvous
+              SET  nom_procedure="'.$new_nom_procedure.'" WHERE id_client='.$client_id.' 
+              AND id_rdv='.$id_rdv.';';
+        $db->query($sql);
     }
 
     ?>
@@ -269,9 +274,24 @@
                 <tr>
                     <td>
                         <?php 
-                            echo '<strong>Procédure effectuée: </strong><br>'.$nom_procedure.'';
+                            echo '<strong>Procédure effectuée: </strong><br><p id="actual_procedure">'.$nom_procedure.'</p>';
                         ?>
+                        <form style="display:true;" method="POST" enctype="multipart/form-data">
+                            
+                            <!-- button to display the alter procedure input -->
+                            <button type="submit" name='change_procedure_name' id="change_procedure_name_button_id" style="display:none;">
+                                Changer le nom de la procédure 
+                            </button>
 
+                            <!-- button to change the procedure  -->
+                            <div id="procedure_input" style="display:none;">
+                                
+
+                                <input id="procedure_input_sub" name="procedure_input_submit" type="text" onkeyup="Expand(this);" >
+
+
+                                <input type="submit" name="procedure_submit">
+                            </div>
                     </td>
 
                 </tr>
@@ -283,7 +303,7 @@
                         ?>
                         <form style="display:true;" method="POST" enctype="multipart/form-data">
                             <!-- button to display the alter date input -->
-                            <button type="submit" name='change_date' id="change_date_button_id">
+                            <button type="submit" name='change_date' id="change_date_button_id" style="display:none;">
                                 Changer la Date 
                             </button>
                             <!-- button to change the date  -->
@@ -390,16 +410,43 @@
         
         $new_date=$_POST['date_input_submit'];
         $new_date=date("Y-m-d",strtotime($new_date));
-        #echo 'document.getElementById("actual_date").innerHTML="'.$new_date.'";';
+        echo 'document.getElementById("actual_date").innerHTML="'.$new_date.'";';
         change_date($db,$client_id,$id_rdv,$new_date);
-
-        echo "location.replace('".$url."')";
+    }
+#change procedure name
+    if(isset($_POST['change_procedure_name'])){
+        echo 'document.getElementById("procedure_input").style="display:true";';
+        echo 'document.getElementById("change_procedure_name_button_id").style="display:none";';
+        echo 'document.getElementById("procedure_input_sub").value="'.$nom_procedure.'";';
     }
 
-
+    if(isset($_POST['procedure_submit'])){
+        #get the name new name of the procedure.
+        $new_procedure_name=$_POST['procedure_input_submit'];
+        #add the new name procedure to the html
+        echo 'document.getElementById("actual_procedure").innerHTML="'.$new_procedure_name.'";';
+        #change the name of the procedure to the database
+        change_procedure($db,$client_id,$id_rdv,$new_procedure_name);
+        #hide the change procedure button
+        echo 'hide_change_name_procedure_button()';
+    }
     
 
 ?>
+//expand the size of the input text 
+function Expand(obj){
+      if (!obj.savesize) obj.savesize=obj.size;
+      obj.size=Math.max(obj.savesize,obj.value.length);
+}
+
+function hide_change_name_procedure_button(){
+    document.getElementById("change_procedure_name_button_id").style="display:none";
+}
+
+function show_change_name_procedure_button(){
+    document.getElementById("change_procedure_name_button_id").style="display:true";
+}
+
 //hide change_date_button
 function hide_change_date_button(){
     document.getElementById("change_date_button_id").style="display:none";
@@ -456,6 +503,8 @@ function modify_content(){
     //show content that can be modified
     document.getElementById("button_add_rm").style="display:true;";
     document.getElementById("bouton_clients").innerHTML='<button onclick="save_content()">Sauvegarder</button>';
+    show_change_date_button();
+    show_change_name_procedure_button();
 }
 
 //removes all buttons to change the imgs.
@@ -472,7 +521,6 @@ function save_content(){
             $counter-=1;
        } 
     ?>
-
     alert("contenu sauvegardé");
 
 }
