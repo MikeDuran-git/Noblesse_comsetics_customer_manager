@@ -51,7 +51,7 @@
     $client_id=$_GET['client_id'];
     $id_rdv=$_GET['id_rdv'];
     $nom=$_GET['nom_client'];
-    
+
     $result= $db->prepare("SELECT * FROM rendezvous where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
     $result->setFetchMode(PDO:: FETCH_OBJ);
     $result->execute(); 
@@ -61,9 +61,6 @@
         $infos_rdv=$row->infos_rdv;
     }
     
-    // $date_rdv=$_GET['date_rdv'];
-    // $nom_procedure=$_GET['nom_procedure'];
-    // $infos_rdv=$_GET['infos_rdv'];
     
     
     function get_img($db,$client_id,$id_rdv,$avant_apres_bool,$url){
@@ -244,7 +241,7 @@
 
     function change_date($db,$client_id,$id_rdv,$new_date){
         $sql='UPDATE rendezvous
-              SET  date_rdv='.$new_date.' WHERE id_client='.$client_id.' 
+              SET  date_rdv="'.$new_date.'" WHERE id_client='.$client_id.' 
               AND id_rdv='.$id_rdv.';';
         $db->query($sql);
         echo 'alert("Date modifiée.");';
@@ -393,12 +390,10 @@
         
         $new_date=$_POST['date_input_submit'];
         $new_date=date("Y-m-d",strtotime($new_date));
-
-        echo 'document.getElementById("actual_date").innerHTML="<strong>'.$new_date.'</strong>";';
-
+        #echo 'document.getElementById("actual_date").innerHTML="'.$new_date.'";';
         change_date($db,$client_id,$id_rdv,$new_date);
 
-
+        echo "location.replace('".$url."')";
     }
 
 
