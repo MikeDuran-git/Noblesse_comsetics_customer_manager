@@ -267,7 +267,11 @@
             $infos_to_send="location.href='info_client_page.php?client_id=".$client_id."'";
             echo "<input type='button' onClick=".$infos_to_send." value='Retour info du client'>";
         ?>
-
+        <!--CLIENT BOUTON ADD REMOVE AND MOD -->
+        <div id= "bouton_clients" >
+        <button onclick="modify_content()">Modifier</button>
+        </div>    
+        <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
         <!--Infos of the rdv-->
         <div id= "infos_rdv" style="margin-top:2%;">
             <table style="width:100%">
@@ -375,11 +379,7 @@
         </div>
         <!--Infos of the rdv END-->
 
-        <!--CLIENT BOUTON ADD REMOVE AND MOD -->
-        <div id= "bouton_clients" >
-        <button onclick="modify_content()">Modifier</button>
-        </div>    
-        <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
+
     
     
     </div>
@@ -403,11 +403,10 @@
 #change the date
     if(isset($_POST['change_date'])){
         echo 'document.getElementById("date_input").style="display:true";';
-        echo 'hide_change_date_button();';
+        #echo 'hide_change_date_button();';
     }
 
     if(isset($_POST['date_submit'])){
-        
         $new_date=$_POST['date_input_submit'];
         $new_date=date("Y-m-d",strtotime($new_date));
         echo 'document.getElementById("actual_date").innerHTML="'.$new_date.'";';
@@ -416,7 +415,7 @@
 #change procedure name
     if(isset($_POST['change_procedure_name'])){
         echo 'document.getElementById("procedure_input").style="display:true";';
-        echo 'document.getElementById("change_procedure_name_button_id").style="display:none";';
+        echo 'document.getElementById("change_procedure_name_button_id").style="display:none";';        
         echo 'document.getElementById("procedure_input_sub").value="'.$nom_procedure.'";';
     }
 
@@ -427,8 +426,6 @@
         echo 'document.getElementById("actual_procedure").innerHTML="'.$new_procedure_name.'";';
         #change the name of the procedure to the database
         change_procedure($db,$client_id,$id_rdv,$new_procedure_name);
-        #hide the change procedure button
-        echo 'hide_change_name_procedure_button()';
     }
     
 
@@ -521,6 +518,8 @@ function save_content(){
             $counter-=1;
        } 
     ?>
+    hide_change_date_button();
+    hide_change_name_procedure_button();
     alert("contenu sauvegardé");
 
 }
