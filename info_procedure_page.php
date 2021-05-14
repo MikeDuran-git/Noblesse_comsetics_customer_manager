@@ -333,10 +333,10 @@ textarea{
                 <tr>
                     <td>
                         <?php 
-                            echo '<strong>infos:</strong><br>'; 
+                            echo '<strong>infos:</strong>'; 
+                            echo ' <strong id="warning_br" style="display:none;color:red;">(IMPORTANT: Pour faire un retour à la ligne écrire en fin de ligne  '.htmlentities("<br>").' exemple: hello '.htmlentities("<br>").' world)</strong>'; 
+                            echo '<br>';
                         ?>
-                        
-
                         <form style="display:true;" method="POST" enctype="multipart/form-data">
                         <?php
                             echo "<div id='info_rdv_content'>
@@ -468,7 +468,9 @@ textarea{
         #get the content of the textarea
 
         $new_info= $_POST['my_text_id'];
-
+        #hide warning sign
+        echo 'document.getElementById("warning_br").style="display:none;";
+        ';
         #add the new name procedure to the html
         echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info.'</p>";';
 
@@ -477,8 +479,11 @@ textarea{
 
     }
 ?>
+
 function set_text_area(){
-    document.getElementById("info_rdv_content").innerHTML = '<br><textarea rows=9 name="my_text_id"  wrap="hard"><?php echo $infos_rdv?></textarea></br>';
+    document.getElementById("warning_br").style="display:true;color:red;";
+
+    document.getElementById("info_rdv_content").innerHTML = '<br><textarea rows=9 name="my_text_id" wrap="hard"><?php echo $infos_rdv?></textarea></br>';
 
     var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;
 
