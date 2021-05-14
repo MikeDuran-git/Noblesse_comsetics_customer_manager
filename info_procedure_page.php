@@ -467,7 +467,7 @@ textarea{
       
         #get the content of the textarea
 
-        $new_info= $_POST['my_text_id'];
+        $new_info= htmlspecialchars( $_POST['my_text_id']);
         #hide warning sign
         echo 'document.getElementById("warning_br").style="display:none;";
         ';
