@@ -73,8 +73,19 @@ table, th, td {
         $date_naissance=$row->date_naissance;
         $tel=$row->num_tel;
     }
-    
-    
+
+    function display_adapted_form($variable){
+        echo "
+        <button id='change_client_".$variable."_button_id' style='display:none;' onclick='show_client_".$variable."_input()'>Chang le ".$variable." du client</button>
+
+        <form style='display:none;' id='".$variable."_input' method='POST' enctype='multipart/form-data'>
+            
+            <input id='".$variable."_input_sub' name='".$variable."_input_submit' type='text' onkeyup='Expand(this);' >
+            
+            <input type='submit' name='".$variable."_submit' onclick='hide_client_".$variable."_input()'>
+            </form>
+        ";
+    }
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -90,16 +101,47 @@ table, th, td {
 
     <!--CENTER-->
     <div class="container" id="main_center">
-        
-        <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'>
+        <!-- Retour a la page d'accueil -->
+            <input type=button onClick="location.href='index.php'" value='Retour à la liste des clients'><br>
+        <!-- Retour a la page d'accueil END-->
+
+        <!--button to modify content-->
+        <div  id="modify_content_button">
+            <button onclick="modify_content()" style="margin-top: 2%;" >MODIFIER</button>
+        </div>
+        <!--button to modify content END-->
 
 
         <!--CLIENT INFO-->
         <div id='client_info'>
             <table style="width:100%">
                 <tr>
-                    <td><?php echo '<strong>Nom:</strong><br>'.$nom;?></td>
-                    <td><?php echo '<strong>numero Telephone:</strong><br>'.$tel;?></td>
+                    <td>
+                        <?php echo '<strong>Nom:</strong><br>'.$nom;?>
+                        
+                        <button id='change_client_name_button_id' style='display:none;' onclick='show_client_name_input()'>Chang le nom du client</button>
+
+                        <form style='display:none;' id='name_input' method='POST' enctype='multipart/form-data'>
+                            
+                            <input id='name_input_sub' name='name_input_submit' type='text' onkeyup='Expand(this);' >
+                            
+                            <input type='submit' name='name_submit' onclick="hide_client_name_input()">
+                            </form>
+                    </td>
+
+                    <td>
+                        	<?php echo '<strong>numero Telephone:</strong><br>'.$tel;?>
+                                                   
+                        <button id='change_client_tel_button_id' style="display:none;" onclick='show_client_tel_input()'>Chang le telephone du client</button>
+
+                        <form style="display:none;" id="tel_input" method="POST" enctype="multipart/form-data">
+    
+                            <input id="tel_input_sub" name="tel_input_submit" type="text" onkeyup="Expand(this);" >
+    
+                            <input type="submit" name="tel_submit" onclick="hide_client_tel_input()">
+                        </form>
+                            
+                    </td>
                 </tr>
                 <tr>
                     <td><?php echo '<strong>Prénom:</strong><br>'.$prenom; ?></td>
@@ -155,7 +197,8 @@ table, th, td {
 </footer>
 <!--END_FOOTER-->
 
-
+<script src="info_client_page.js">
+</script>
 
 
 
