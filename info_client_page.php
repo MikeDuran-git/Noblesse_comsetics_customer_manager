@@ -28,56 +28,61 @@ table, th, td {
     session_start();
     
     function database_print($db,$result,$client_id,$nom){
-       $result->setFetchMode(PDO:: FETCH_OBJ);
-        $result->execute(); 
-        //count amount
-
-        $counter=0; //compter les rdv
-        while($row = $result->fetch()){
-            $counter+=1;
-            $infos_to_send='client_id='.$client_id.
-                           '&nom_client='.$nom.
-                           '&id_rdv='.$row->id_rdv.
-                           '';
-            echo '            
-            <tr id="tr_'.$row->id_rdv.'">
-                
-                <td>
-                    <form id="form_'.$row->id_rdv.'" action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
-                        <input type="submit" style="text-align: center;" value="Choisir ce '.$row->id_rdv.' " name="select_'.$row->id_rdv.'">
-
-                    </form>
-                    
-                    <form id="drop_form_'.$row->id_rdv.'" method="POST"> 
-                        
-                        <input type="submit" style="text-align: center;" value="Enlever ce '.$row->id_rdv.'" name="drop_row_'.$row->id_rdv.'">
-                    
-                        </form>
-                </td>
-
-                <td>'.
-                    $row->date_rdv. #date du rdv
-                '</td>
-                
-                <td>'.
-                    $row->nom_procedure. #nom de la procedure
-                '</td>
-                </tr>
-            ';
-
+        $result->setFetchMode(PDO:: FETCH_OBJ);
+         $result->execute(); 
+         //count amount
+ 
+         $counter=0; //compter les rdv
+         while($row = $result->fetch()){
+             $counter+=1;
+             $infos_to_send='client_id='.$client_id.
+                            '&nom_client='.$nom.
+                            '&id_rdv='.$row->id_rdv.
+                            '';
+             echo '            
+             <tr id="tr_'.$row->id_rdv.'">
+                 
+                 <td>
+                     <div id="form_'.$row->id_rdv.'"> 
+                         <form action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
+                             <input type="submit" style="text-align: center;" value="Choisir ce '.$row->id_rdv.' " name="select_'.$row->id_rdv.'">
+ 
+                         </form>
+                     </div>
+                     
+                     <form id="drop_form_'.$row->id_rdv.'" method="POST" style="display:none;"> 
+                         
+                         <input type="submit" style="text-align: center;" value="Enlever ce '.$row->id_rdv.'" name="drop_row_'.$row->id_rdv.'">
+                     
+                         </form>
+                 </td>
+ 
+                 <td>'.
+                     $row->date_rdv. #date du rdv
+                 '</td>
+                 
+                 <td>'.
+                     $row->nom_procedure. #nom de la procedure
+                 '</td>
+                 </tr>
+             ';
+ 
             if(isset($_POST["drop_row_".$row->id_rdv])){
-                drop_rdv($db,$client_id,$row->id_rdv);
-                //refresh the page
-                echo '
-                <script>
-                    document.getElementById("tr_'.$row->id_rdv.'").remove();
-                </script>
-                ';
-            }
+                 drop_rdv($db,$client_id,$row->id_rdv);
+                 show_select_rdv_buttons($db,$client_id);
 
-        };
-        if($counter==0){ echo "Le client n'a pas de rdv";}
-    };
+                 echo '
+                 <script>
+                    document.getElementById("tr_'.$row->id_rdv.'").remove();
+                 </script>
+                 ';
+
+             }
+ 
+         };
+         if($counter==0){ echo "Le client n'a pas de rdv";}
+     };
+ 
 
     //Client Data
     $client_id=$_GET['client_id'];
@@ -191,6 +196,50 @@ table, th, td {
         }
     }
 
+
+    function hide_select_rdv_and_show_rm_rdv__buttons($db,$client_id){
+        $result= $db->prepare("select id_rdv from rendezvous where id_client=".$client_id.";");
+        $result->setFetchMode(PDO:: FETCH_OBJ);
+        $result->execute(); 
+        while($row = $result->fetch()){
+             #hide the form button
+             $rdv="form_".$row->id_rdv;
+             echo "
+                document.getElementById('".$rdv."').style='display:none;'
+                ;";
+            #show the drop form buttons
+            $rdv="drop_form_".$row->id_rdv;
+            echo "
+               document.getElementById('".$rdv."').style='display:true;'
+               ;";           
+         }
+     }
+
+    
+    
+    function show_select_rdv_buttons($db,$client_id){
+        $result= $db->prepare("select id_rdv from rendezvous where id_client=".$client_id.";");
+        $result->setFetchMode(PDO:: FETCH_OBJ);
+        $result->execute();
+        while($row = $result->fetch()){
+             #hide the form button
+             $rdv="form_".$row->id_rdv;
+             echo "
+                <script>
+                document.getElementById('".$rdv."').style='display:true;'
+                ;
+                </script>
+                ";
+                
+            #show the drop form buttons
+            $rdv="drop_form_".$row->id_rdv;
+            echo "
+            <script>
+               document.getElementById('".$rdv."').style='display:none;';
+            </script>";           
+         }
+    }
+
     if(isset($_POST['name_submit'])){
         //we take the new name input
             $new_client_name=$_POST['name_input_submit'];    
@@ -234,7 +283,6 @@ table, th, td {
         //refresh the page
             header("Refresh:0");
     }
-
 
     ?>
 <!--DATABASE CONNECTION END-->
@@ -311,17 +359,15 @@ table, th, td {
                     </td>
                 </tr>
             </table>
-
         </div>    
         <!--CLIENT INFO END -->
 
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients" style="visibility: hidden;">
-            <?php
-                echo '<button type="submit" name="add_rdv">Ajout Rendez-vous</button>';
-                echo '<button >Enlever un Rendez-vous</button>';
-            ?>
+                <button id="add_rdv">Ajout Rendez-vous</button>
+                
+                <button id="rm_rdv" onclick="rm_button_clicked()">Enlever un Rendez-vous</button>
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
 
@@ -357,11 +403,43 @@ table, th, td {
 </footer>
 <!--END_FOOTER-->
 
-<script src="info_client_page.js">
+<script>
+    function rm_button_clicked(){
+        //hide content
+        <?php 
+            hide_select_rdv_and_show_rm_rdv__buttons($db,$client_id);
+        ?>
+        show_save_button();
+        hide_mod_buttons();
+    }
+
+    function hide_mod_buttons(){
+        document.getElementById("change_client_name_button_id").style="display:none";
+        document.getElementById("change_client_tel_button_id").style="display:none";
+        document.getElementById("change_client_surname_button_id").style="display:none";
+        document.getElementById("change_client_Email_button_id").style="display:none";
+        document.getElementById("change_client_date_button_id").style="display:none";
+        document.getElementById("bouton_clients").style="visibility:hidden;";
+
+
+    }
+    function show_mod_button(){
+        document.getElementById("modify_content_button").innerHTML='            <button onclick="modify_content()" style="margin-top: 2%;" >MODIFIER</button>';
+    }
+    function show_save_button(){
+        document.getElementById("modify_content_button").innerHTML=
+        "<button id='save_content_button' onclick='save_content()' style='margin-top: 2%;' >Sauvegarder</button>";
+
+    }
 
 </script>
 
 
+<script src="info_client_page.js">
+
+
+
+</script>
 
 </body>
 </html>

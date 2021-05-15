@@ -5,9 +5,8 @@ function Expand(obj){
 }
 
 function modify_content(){
-    document.getElementById("modify_content_button").innerHTML=
-    "<button id='save_content_button' onclick='save_content()' style='margin-top: 2%;' >Sauvegarder</button>";
-
+    //the button modify must be seen
+    show_saving_button()
     // print the buttons to modify the respectives attributes
     show_change_client_name_button();
     show_change_client_tel_button();
@@ -18,11 +17,25 @@ function modify_content(){
 }
 
 function save_content(){
-    document.getElementById("modify_content_button").innerHTML='            <button onclick="modify_content()" style="margin-top: 2%;" >MODIFIER</button>';
+    //the button to modify must be seen
+        show_mod_button()
     // hide the buttons to modify the respectives attributes
+        hide_all_change_buttons();
+}
 
+//functions to alter the modification button
+function show_mod_button(){
+        document.getElementById("modify_content_button").innerHTML='            <button onclick="modify_content()" style="margin-top: 2%;" >MODIFIER</button>';
+}
+
+function show_saving_button(){
+        document.getElementById("modify_content_button").innerHTML=
+        "<button id='save_content_button' onclick='save_content()' style='margin-top: 2%;' >Sauvegarder</button>";
+}
+
+function hide_all_change_buttons(){
     //hide the add and remove rdv buttons
-        hide_add_rm_rdv();
+    hide_add_rm_rdv();
 
     //hide the client_name modifiers
         hide_change_client_name_button();
@@ -175,4 +188,3 @@ function save_content(){
                 hide_change_client_name_button();
                 hide_add_rm_rdv();
     }
-
