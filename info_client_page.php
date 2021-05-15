@@ -76,13 +76,13 @@ table, th, td {
 
     function display_adapted_form($variable){
         echo "
-        <button id='change_client_".$variable."_button_id' style='display:none;' onclick='show_client_".$variable."_input()'>Chang le ".$variable." du client</button>
+        <button id='change_client_".$variable."_button_id' style='display:none;' onclick='show_client_".$variable."_input()'>Changer le ".$variable." du client</button>
 
         <form style='display:none;' id='".$variable."_input' method='POST' enctype='multipart/form-data'>
             
-            <input id='".$variable."_input_sub' name='".$variable."_input_submit' type='text' onkeyup='Expand(this);' >
+                <input id='".$variable."_input_sub' name='".$variable."_input_submit' type='text' onkeyup='Expand(this);' >
             
-            <input type='submit' name='".$variable."_submit' onclick='hide_client_".$variable."_input()'>
+                <input type='submit' name='".$variable."_submit' onclick='hide_client_".$variable."_input()'>
             </form>
         ";
     }
@@ -117,35 +117,43 @@ table, th, td {
             <table style="width:100%">
                 <tr>
                     <td>
-                        <?php echo '<strong>Nom:</strong><br>'.$nom;?>
-                        
-                        <button id='change_client_name_button_id' style='display:none;' onclick='show_client_name_input()'>Chang le nom du client</button>
-
-                        <form style='display:none;' id='name_input' method='POST' enctype='multipart/form-data'>
-                            
-                            <input id='name_input_sub' name='name_input_submit' type='text' onkeyup='Expand(this);' >
-                            
-                            <input type='submit' name='name_submit' onclick="hide_client_name_input()">
-                            </form>
+                        <?php 
+                                echo '<strong>Nom:</strong><br>'.$nom;
+                                display_adapted_form("name");
+                        ?>
+                         
                     </td>
 
                     <td>
-                        	<?php echo '<strong>numero Telephone:</strong><br>'.$tel;?>
-                                                   
-                        <button id='change_client_tel_button_id' style="display:none;" onclick='show_client_tel_input()'>Chang le telephone du client</button>
-
-                        <form style="display:none;" id="tel_input" method="POST" enctype="multipart/form-data">
-    
-                            <input id="tel_input_sub" name="tel_input_submit" type="text" onkeyup="Expand(this);" >
-    
-                            <input type="submit" name="tel_submit" onclick="hide_client_tel_input()">
-                        </form>
+                        	<?php 
+                                echo '<strong>numero Telephone:</strong><br>'.$tel;
+                                display_adapted_form("tel");
+                            ?>
+                                                
                             
                     </td>
                 </tr>
                 <tr>
-                    <td><?php echo '<strong>Prénom:</strong><br>'.$prenom; ?></td>
-                    <td><?php echo '<strong>Email:</strong><br>'.$Email; ?></td>
+                    <td>
+                        <?php 
+                            echo '<strong>Prénom:</strong><br>'.$prenom;
+                            display_adapted_form("surname");
+                        ?>
+                        <!-- <button id='change_client_surname_button_id' style='display:none;' onclick='show_client_surname_input()'>Chang le prenom du client</button>
+
+                        <form style='display:none;' id='surname_input' method='POST' enctype='multipart/form-data'>
+    
+                            <input id='surname_input_sub' name='surname_input_submit' type='text' onkeyup='Expand(this);' >
+    
+                            <input type='submit' name='surname_submit' onclick='hide_client_surname_input()'>
+                        </form> -->
+
+                    </td>
+                    <td>
+                        <?php 
+                            echo '<strong>Email:</strong><br>'.$Email; 
+                        ?>
+                    </td>
 
                 </tr>
                 <tr>

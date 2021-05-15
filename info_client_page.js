@@ -11,6 +11,8 @@ function modify_content(){
     // print the buttons to modify the respectives attributes
     show_change_client_name_button();
     show_change_client_tel_button();
+    show_change_client_surname_button();
+
 }
 
 function save_content(){
@@ -27,6 +29,7 @@ function save_content(){
     //hide the client_surname modifiers
         hide_change_client_surname_button();
         hide_client_surname_input();
+    
 
 }
 //functions that interact with the clients name
