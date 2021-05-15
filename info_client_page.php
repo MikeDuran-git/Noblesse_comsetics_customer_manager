@@ -18,9 +18,6 @@ table, th, td {
 #client_info, #bouton_clients, #rdv_client{
     margin-top: 10%;
 }
-
-
-
 </style>
 <body style="background-color: burlywood;">
 
@@ -35,7 +32,7 @@ table, th, td {
         $result->execute(); 
         //count amount
 
-        $counter=0;
+        $counter=0; //compter les rdv
         while($row = $result->fetch()){
             $counter+=1;
             $infos_to_send='client_id='.$client_id.
@@ -103,6 +100,111 @@ table, th, td {
             ";
     }
 
+    function set_client_name($db,$client_id,$new_client_name){
+        try{
+            $sql="UPDATE clients SET nom='".$new_client_name."' WHERE id=".$client_id.";";
+            
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'INSERTING NEW CLIENT NAME FAILED';
+        }
+    }
+
+    function set_client_tel($db,$client_id,$new_client_tel){
+        try{
+            $sql="UPDATE clients SET num_tel='".$new_client_tel."' WHERE id=".$client_id.";";
+            
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'INSERTING NEW CLIENT Phone number FAILED';
+        }
+    }
+
+    function set_client_surname($db,$client_id,$new_client_surname){
+        try{
+            $sql="UPDATE clients SET prenom='".$new_client_surname."' WHERE id=".$client_id.";";
+            
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'INSERTING NEW CLIENT surname FAILED';
+        }
+    }
+
+    function set_client_Email($db,$client_id,$new_client_Email){
+        try{
+            $sql="UPDATE clients SET Email='".$new_client_Email."' WHERE id=".$client_id.";";
+            
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'INSERTING NEW CLIENT Email FAILED';
+        }
+    }
+
+    function set_client_date($db,$client_id,$new_client_date){
+        try{
+            $sql="UPDATE clients SET date_naissance='".$new_client_date."' WHERE id=".$client_id.";";
+            
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'INSERTING NEW CLIENT date_naissance FAILED';
+        }
+    }
+
+    if(isset($_POST['name_submit'])){
+        //we take the new name input
+            $new_client_name=$_POST['name_input_submit'];    
+        // changing the database
+            set_client_name($db,$client_id,$new_client_name); 
+        //refresh the page
+        header("Refresh:0");
+    }
+    
+    if(isset($_POST['tel_submit'])){
+        //we take the new tel input
+            $new_client_tel=$_POST['tel_input_submit'];    
+        // changing the database
+            set_client_tel($db,$client_id,$new_client_tel); 
+        //refresh the page
+        header("Refresh:0");
+    }
+
+    if(isset($_POST['surname_submit'])){
+        //we take the new surname input
+            $new_client_surname=$_POST['surname_input_submit'];    
+        // changing the database
+            set_client_surname($db,$client_id,$new_client_surname); 
+        //refresh the page
+        header("Refresh:0");
+    }
+    if(isset($_POST['Email_submit'])){
+        //we take the new Email input
+            $new_client_Email=$_POST['Email_input_submit'];    
+        // changing the database
+            set_client_Email($db,$client_id,$new_client_Email); 
+        //refresh the page
+        header("Refresh:0");
+    }
+
+    if(isset($_POST['date_submit'])){
+        //we take the new date input
+            $new_client_date=$_POST['date_input_submit'];    
+        // changing the database
+            set_client_date($db,$client_id,$new_client_date); 
+        //refresh the page
+            header("Refresh:0");
+    }
+
+    
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -225,6 +327,7 @@ table, th, td {
 <!--END_FOOTER-->
 
 <script src="info_client_page.js">
+
 </script>
 
 
