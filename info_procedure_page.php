@@ -483,7 +483,7 @@ textarea{
 function set_text_area(){
     document.getElementById("warning_br").style="display:true;color:red;";
 
-    document.getElementById("info_rdv_content").innerHTML = '<br><textarea rows=9 name="my_text_id" wrap="hard"><?php echo $infos_rdv?></textarea></br>';
+    document.getElementById("info_rdv_content").innerHTML = "<br><textarea rows=9 name='my_text_id' ><?php echo $infos_rdv?></textarea></br>";
 
     var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;
 

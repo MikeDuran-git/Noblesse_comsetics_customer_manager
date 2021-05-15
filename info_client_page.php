@@ -37,24 +37,27 @@ table, th, td {
 
         $counter=0;
         while($row = $result->fetch()){
-            $counter-=1;
+            $counter+=1;
             $infos_to_send='client_id='.$client_id.
                            '&nom_client='.$nom.
                            '&id_rdv='.$row->id_rdv.
                            '';
             echo '            
             <tr>
-            <td>
-                <form action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
-                    <input type="submit" style="text-align: center;" value="Choisir ce rendezvous" name="select_'.$counter.'">
-                </form>
-            </td>
-            <td>'.
-                $row->date_rdv. #prenom
-            '</td>
-            <td>'.
-                $row->nom_procedure. #nom
-            '</td>
+                
+                <td>
+                    <form action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
+                        <input type="submit" style="text-align: center;" value="Choisir ce '.$row->id_rdv.' " name="select_'.$row->id_rdv.'">
+                    </form>
+                </td>
+
+                <td>'.
+                    $row->date_rdv. #date du rdv
+                '</td>
+                
+                <td>'.
+                    $row->nom_procedure. #nom de la procedure
+                '</td>
             ';
         };
         if($counter==0){ echo "Le client n'a pas de rdv";}
@@ -99,6 +102,7 @@ table, th, td {
                 </form>
             ";
     }
+
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -131,7 +135,8 @@ table, th, td {
                 <tr>
                     <td>
                         <?php 
-                                echo '<strong>Nom:</strong><br>'.$nom;
+                                echo '<strong>Nom:</strong><br>
+                                <p id="content_nom">'.$nom.'</p>';
                                 display_adapted_form("name");
                         ?>
                          
@@ -139,7 +144,7 @@ table, th, td {
 
                     <td>
                         	<?php 
-                                echo '<strong>numero Telephone:</strong><br>'.$tel;
+                                echo '<strong>numero Telephone:</strong><br>  <p id="content_tel">'.$tel.'</p>';
                                 display_adapted_form("tel");
                             ?>
                                                 
@@ -149,22 +154,14 @@ table, th, td {
                 <tr>
                     <td>
                         <?php 
-                            echo '<strong>Prénom:</strong><br>'.$prenom;
+                            echo '<strong>Prénom:</strong><br>  <p id="content_prenom">'.$prenom.'</p>';
                             display_adapted_form("surname");
                         ?>
-                        <!-- <button id='change_client_surname_button_id' style='display:none;' onclick='show_client_surname_input()'>Chang le prenom du client</button>
-
-                        <form style='display:none;' id='surname_input' method='POST' enctype='multipart/form-data'>
-    
-                            <input id='surname_input_sub' name='surname_input_submit' type='text' onkeyup='Expand(this);' >
-    
-                            <input type='submit' name='surname_submit' onclick='hide_client_surname_input()'>
-                        </form> -->
-
                     </td>
                     <td>
                         <?php 
-                            echo '<strong>Email:</strong><br>'.$Email; 
+                            echo '<strong>Email:</strong><br>  
+                            <p id="content_Email">'.$Email.'</p>';
                             display_adapted_form("Email");
                         ?>
                     </td>
@@ -173,7 +170,9 @@ table, th, td {
                 <tr>
                     <td>
                         <?php 
-                            echo '<strong>Date de naissance:</strong><br>'.$date_naissance;
+                            echo '<strong>Date de naissance:</strong><br>  
+                            <p id="content_date">'.$date_naissance.'</p>';
+                            
                             display_adapted_form("date");
                         ?>
                     </td>
@@ -186,9 +185,9 @@ table, th, td {
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients" style="visibility: hidden;">
-        <?php
-            echo '<button>Ajout Rendez-vous</button>';
-            echo '<button >Enlever un Rendez-vous</button>';
+            <?php
+                echo '<button>Ajout Rendez-vous</button>';
+                echo '<button >Enlever un Rendez-vous</button>';
             ?>
         </div>    
         <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
