@@ -40,12 +40,19 @@ table, th, td {
                            '&id_rdv='.$row->id_rdv.
                            '';
             echo '            
-            <tr>
+            <tr id="tr_'.$row->id_rdv.'">
                 
                 <td>
-                    <form action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
+                    <form id="form_'.$row->id_rdv.'" action="info_procedure_page.php?'.$infos_to_send.'" method="POST"> 
                         <input type="submit" style="text-align: center;" value="Choisir ce '.$row->id_rdv.' " name="select_'.$row->id_rdv.'">
+
                     </form>
+                    
+                    <form id="drop_form_'.$row->id_rdv.'" method="POST"> 
+                        
+                        <input type="submit" style="text-align: center;" value="Enlever ce '.$row->id_rdv.'" name="drop_row_'.$row->id_rdv.'">
+                    
+                        </form>
                 </td>
 
                 <td>'.
@@ -55,7 +62,19 @@ table, th, td {
                 <td>'.
                     $row->nom_procedure. #nom de la procedure
                 '</td>
+                </tr>
             ';
+
+            if(isset($_POST["drop_row_".$row->id_rdv])){
+                drop_rdv($db,$client_id,$row->id_rdv);
+                //refresh the page
+                echo '
+                <script>
+                    document.getElementById("tr_'.$row->id_rdv.'").remove();
+                </script>
+                ';
+            }
+
         };
         if($counter==0){ echo "Le client n'a pas de rdv";}
     };
@@ -160,6 +179,18 @@ table, th, td {
         }
     }
 
+    function drop_rdv($db,$client_id,$id_rdv){
+        try{
+            $sql="DELETE FROM rendezvous WHERE id_client='".$client_id."' AND id_rdv='".$id_rdv."';";
+            
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'Unsuccessful drop request';
+        }
+    }
+
     if(isset($_POST['name_submit'])){
         //we take the new name input
             $new_client_name=$_POST['name_input_submit'];    
@@ -204,7 +235,7 @@ table, th, td {
             header("Refresh:0");
     }
 
-    
+
     ?>
 <!--DATABASE CONNECTION END-->
 
@@ -288,7 +319,7 @@ table, th, td {
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients" style="visibility: hidden;">
             <?php
-                echo '<button>Ajout Rendez-vous</button>';
+                echo '<button type="submit" name="add_rdv">Ajout Rendez-vous</button>';
                 echo '<button >Enlever un Rendez-vous</button>';
             ?>
         </div>    

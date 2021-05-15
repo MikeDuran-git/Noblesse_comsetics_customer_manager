@@ -55,7 +55,6 @@ function save_content(){
         document.getElementById("bouton_clients").style="visibility:visible;";
     }
 
-//functions that interact with the clients name
     function hide_change_client_name_button(){
         document.getElementById("change_client_name_button_id").style="display:none";
     }
