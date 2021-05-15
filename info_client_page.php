@@ -75,16 +75,29 @@ table, th, td {
     }
 
     function display_adapted_form($variable){
-        echo "
-        <button id='change_client_".$variable."_button_id' style='display:none;' onclick='show_client_".$variable."_input()'>Changer le ".$variable." du client</button>
 
-        <form style='display:none;' id='".$variable."_input' method='POST' enctype='multipart/form-data'>
+        if($variable != "date")
+            echo "
+                <button id='change_client_".$variable."_button_id' style='display:none;' onclick='show_client_".$variable."_input()'>Changer le ".$variable." du client</button>
+
+                <form style='display:none;' id='".$variable."_input' method='POST' enctype='multipart/form-data'>
             
-                <input id='".$variable."_input_sub' name='".$variable."_input_submit' type='text' onkeyup='Expand(this);' >
+                    <input id='".$variable."_input_sub' name='".$variable."_input_submit' type='text' onkeyup='Expand(this);' >
             
-                <input type='submit' name='".$variable."_submit' onclick='hide_client_".$variable."_input()'>
-            </form>
-        ";
+                    <input type='submit' name='".$variable."_submit' onclick='hide_client_".$variable."_input()'>
+                </form>
+            ";
+        else
+            echo "
+                <button id='change_client_".$variable."_button_id' style='display:none;' onclick='show_client_".$variable."_input()'>Changer la ".$variable." du client</button>
+
+                <form style='display:none;' id='".$variable."_input' method='POST' enctype='multipart/form-data'>
+            
+                    <input  type='date' id='".$variable."_input_sub' name='".$variable."_input_submit'>
+            
+                    <input type='submit' name='".$variable."_submit' onclick='hide_client_".$variable."_input()'>
+                </form>
+            ";
     }
     ?>
 <!--DATABASE CONNECTION END-->
@@ -152,12 +165,18 @@ table, th, td {
                     <td>
                         <?php 
                             echo '<strong>Email:</strong><br>'.$Email; 
+                            display_adapted_form("Email");
                         ?>
                     </td>
 
                 </tr>
                 <tr>
-                    <td><?php echo '<strong>Date de naissance:</strong><br>'.$date_naissance; ?></td>
+                    <td>
+                        <?php 
+                            echo '<strong>Date de naissance:</strong><br>'.$date_naissance;
+                            display_adapted_form("date");
+                        ?>
+                    </td>
                 </tr>
             </table>
 
@@ -165,9 +184,17 @@ table, th, td {
         <!--CLIENT INFO END -->
 
 
+        <!--CLIENT BOUTON ADD REMOVE AND MOD -->
+        <div id= "bouton_clients" style="visibility: hidden;">
+        <?php
+            echo '<button>Ajout Rendez-vous</button>';
+            echo '<button >Enlever un Rendez-vous</button>';
+            ?>
+        </div>    
+        <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
 
         <!--Appointment of client-->
-        <div id= "rdv_client">
+        <div id= "rdv_client" style="margin-top: 0%;" >
         <table style="text-align:center;">
                 <tr>
                     <th>Bouton selection</th>
@@ -185,14 +212,7 @@ table, th, td {
 
 
 
-        <!--CLIENT BOUTON ADD REMOVE AND MOD -->
-        <div id= "bouton_clients">
-        <?php
-            echo '<button>Ajout Rendez-vous</button>';
-            echo '<button >Enlever un Rendez-vous</button>';
-            ?>
-        </div>    
-        <!--CLIENT BOUTON ADD REMOVE AND MOD END-->
+
     
     
     </div>
