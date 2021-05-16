@@ -55,9 +55,19 @@ textarea{
  
 
     //Client Data
+
     $client_id=$_GET['client_id'];
     $id_rdv=$_GET['id_rdv'];
     $nom=$_GET['nom_client'];
+    $date_rdv=null;
+    $nom_procedure=null;
+    $infos_rdv=null;
+    
+
+
+
+
+    
 
     $result= $db->prepare("SELECT * FROM rendezvous where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
     $result->setFetchMode(PDO:: FETCH_OBJ);
@@ -67,8 +77,21 @@ textarea{
         $nom_procedure=$row->nom_procedure;
         $infos_rdv=$row->infos_rdv;
     }
-    
-    
+
+
+    // if(($date_rdv==null) || ($nom_procedure==null) || ($infos_rdv==null)  ){
+    //     echo "the values are undefined <br>";
+    //     $result= $db->prepare("SELECT * FROM rendezvous where id_client=".$client_id." AND id_rdv=".$id_rdv.";");
+    //     $result->setFetchMode(PDO:: FETCH_OBJ);
+    //     $result->execute(); 
+    //     while($row = $result->fetch()){
+    //         $date_rdv=$row->date_rdv;
+    //         $nom_procedure=$row->nom_procedure;
+    //         $infos_rdv=$row->infos_rdv;
+    //     }
+    //  }
+
+
     
     function get_img($db,$client_id,$id_rdv,$avant_apres_bool,$url){
         
@@ -611,6 +634,7 @@ document.addEventListener('input', function (event) {
 if (event.target.tagName.toLowerCase() !== 'textarea') return;
 autoExpand(event.target);
 }, false);
+
 
 </script>
 

@@ -26,7 +26,17 @@ table, th, td {
     <?php
     include 'connexion.php';
     session_start();
-    
+        //get URL
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+            $url = "https://";   
+        else  
+            $url = "http://";   
+        // Append the host(domain name, ip) to the URL.   
+        $url.= $_SERVER['HTTP_HOST'];   
+        // Append the requested resource location to the URL   
+        $url.= $_SERVER['REQUEST_URI'];    
+ 
+
     function database_print($db,$result,$client_id,$nom){
         $result->setFetchMode(PDO:: FETCH_OBJ);
          $result->execute(); 
@@ -196,6 +206,25 @@ table, th, td {
         }
     }
 
+    function add_rdv($db,$client_id,$nom){
+        $gid=$db->prepare("SELECT MAX(id_rdv) as maximum FROM rendezvous WHERE id_client=".$client_id.";");
+        $gid->execute();
+        $max_val = $gid->fetch(PDO::FETCH_ASSOC);
+        $max_val=$max_val['maximum']+1;
+
+        try{
+            $sql="INSERT INTO rendezvous 
+            (id_client,id_rdv,date_rdv,nom_procedure,infos_rdv) 
+            VALUES (".$client_id.",".$max_val.",'0000-00-00','inserer un nom à cette procedure','remplacer ce texte par des infos pour le rendezvous')";
+            $db->query($sql);
+
+            
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'Unsuccessful drop request';
+        }
+    }
 
     function hide_select_rdv_and_show_rm_rdv__buttons($db,$client_id){
         $result= $db->prepare("select id_rdv from rendezvous where id_client=".$client_id.";");
@@ -365,7 +394,9 @@ table, th, td {
 
         <!--CLIENT BOUTON ADD REMOVE AND MOD -->
         <div id= "bouton_clients" style="visibility: hidden;">
-                <button id="add_rdv">Ajout Rendez-vous</button>
+            <form method=post>
+                <button type="submit" id="add_rdv" name="add_rdv_button_submit">Ajout Rendez-vous</button>
+            </form>
                 
                 <button id="rm_rdv" onclick="rm_button_clicked()">Enlever un Rendez-vous</button>
         </div>    
@@ -404,6 +435,8 @@ table, th, td {
 <!--END_FOOTER-->
 
 <script>
+
+
     function rm_button_clicked(){
         //hide content
         <?php 
@@ -412,6 +445,32 @@ table, th, td {
         show_save_button();
         hide_mod_buttons();
     }
+
+<?php 
+    if(isset($_POST['add_rdv_button_submit'])){
+        echo "show_save_button();
+        hide_mod_buttons();";
+        //add a new rdv in the database        
+        add_rdv($db,$client_id,$nom);
+        
+        //switch to a new page
+        $gid=$db->prepare("SELECT MAX(id_rdv) as maximum FROM rendezvous WHERE id_client=".$client_id.";");
+        $gid->execute();
+        $max_val = $gid->fetch(PDO::FETCH_ASSOC);
+        $max_val=$max_val['maximum']+1;
+
+        $infos_to_send='client_id='.$client_id.
+                            '';
+        echo 'location.href="info_client_page.php?'.$infos_to_send.'";';
+        /*
+        echo "location.href='info_procedure_page.php?client_id=".$client_id
+        ."&nom_client=".$nom
+        ."&id_rdv=".$max_val
+        ."';";
+        */
+        #echo "document.location.reload(true);";
+    }
+?>
 
     function hide_mod_buttons(){
         document.getElementById("change_client_name_button_id").style="display:none";

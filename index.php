@@ -53,7 +53,7 @@
 
 
     <!--CENTER-->
-    <div class="cqontainer" id="main_center">
+    <div class="container" id="main_center">
         
         <!--Searchbar-->
         <div>  
