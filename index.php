@@ -26,8 +26,7 @@
 
     function add_client_to_database($db){
         try{
-            $sql="INSERT into clients (nom,prenom,date_naissance,num_tel,Email) VALUES ('ajouter un nom à ce client','ajouter un prénom ici','0000-00-00','ajouter un numero de tel à ce client','ajouter un Email à ce client')
-";
+            $sql="INSERT into clients (nom,prenom,date_naissance,num_tel,Email) VALUES ('ajouter un nom à ce client','ajouter un prénom ici','0000-00-00','ajouter un numero de tel à ce client','ajouter un Email à ce client')";
             $db->query($sql);
         }
         catch(Exception $e){
@@ -36,7 +35,37 @@
         }
     }
 
-    function database_print($result){
+    function rm_client_from_database($db,$client_id){
+        try{
+            //delete client
+            $sql="DELETE from clients WHERE id=".$client_id."";
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'Unsuccessful drop request';
+        }
+
+    }
+    function hide_select_client_and_show_rm_client__buttons($db){
+        $result= $db->prepare("select id from clients");
+        $result->setFetchMode(PDO:: FETCH_OBJ);
+        $result->execute(); 
+        while($row = $result->fetch()){
+             #hide the form button
+             $rdv="form_".$row->id;
+             echo "
+                document.getElementById('".$rdv."').style='display:none;'
+                ;";
+            #show the drop form buttons
+            $rdv="drop_form_".$row->id;
+            echo "
+               document.getElementById('".$rdv."').style='display:true;'
+               ;";           
+         }
+     }
+
+    function database_print($db,$result){
         $result->setFetchMode(PDO:: FETCH_OBJ);
         $result->execute();
         $counter=0;
@@ -45,9 +74,17 @@
             echo '            
             <tr>
             <td>
-                <form action="info_client_page.php?client_id='.$row->id.'" method="POST"> 
-                    <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
-                </form>
+                <div id="form_'.$row->id.'">
+                    <form action="info_client_page.php?client_id='.$row->id.'" method="POST"> 
+                        <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
+                    </form>
+                </div>
+
+                <div id="drop_form_'.$row->id.'" style="display:none;">
+                    <form method="POST"> 
+                        <input type="submit" style="text-align: center;" value="Enlever ce client" name="drop_row_'.$counter.'">
+                    </form>
+                </div>
             </td>
             <td>'.
                 $row->prenom. #prenom
@@ -59,6 +96,18 @@
                 $row->Email. # email
             '</td>
             ';
+            if(isset($_POST["drop_row_".$counter])){
+                //add a question to be sure to delete the client
+                
+
+
+                //delete the client
+                rm_client_from_database($db,$row->id);
+                //reload the page
+                echo '<script>location.href="index.php?";</script>';
+
+
+            }
         };
         if($counter==0){ echo "Le nom, le prenom ou le numero de telephone de ce Client n'existe pas";}
     };
@@ -85,7 +134,9 @@
         <!-- ADD CLIENT BUTTON END-->
 
         <!-- RM CLIENT BUTTON -->
-        <button style="visibility: hidden;" id="rm_client_button">Enlever un Client</button>
+        <form method=post>
+            <button style="visibility: hidden;" type="submit" id="rm_client_button" name="rm_client_button_submit">Enlever un Client</button>
+        </form>
         <!-- RM CLIENT BUTTON END -->
 
 
@@ -124,11 +175,11 @@
                         //le cas si il y a un nom donner
                             $result= $db->prepare("SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'");
                         }
-                        database_print($result);
+                        database_print($db,$result);
                     }
                 else{
                     $result= $db->prepare("SELECT * FROM `clients`");
-                    database_print($result);
+                    database_print($db,$result);
                 }
                 ?>
                 <!--PHP input structure END-->
@@ -160,8 +211,15 @@ if(isset($_POST['add_client_button_submit'])){
         $max_val = $gid->fetch(PDO::FETCH_ASSOC);
         $max_val=$max_val['maximum'];
         $infos_to_send='client_id='.$max_val.'';
-        echo 'location.href="info_client_page.php?'.$infos_to_send.'";';}
+        echo 'location.href="info_client_page.php?'.$infos_to_send.'";';
+}
+
+if(isset($_POST['rm_client_button_submit'])){
+    hide_select_client_and_show_rm_client__buttons($db);
+}
 ?>
+
+
 
 
 function hide_mod_button(){
