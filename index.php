@@ -14,6 +14,27 @@
     <?php
     include 'connexion.php';
     session_start();
+    
+    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+        $url = "https://";   
+    else  
+        $url = "http://";   
+    // Append the host(domain name, ip) to the URL.   
+    $url.= $_SERVER['HTTP_HOST'];   
+    // Append the requested resource location to the URL   
+    $url.= $_SERVER['REQUEST_URI'];    
+
+    function add_client_to_database($db){
+        try{
+            $sql="INSERT into clients (nom,prenom,date_naissance,num_tel,Email) VALUES ('ajouter un nom à ce client','ajouter un prénom ici','0000-00-00','ajouter un numero de tel à ce client','ajouter un Email à ce client')
+";
+            $db->query($sql);
+        }
+        catch(Exception $e){
+            print $e->getMessage();
+            echo 'Unsuccessful insert request';
+        }
+    }
 
     function database_print($result){
         $result->setFetchMode(PDO:: FETCH_OBJ);
@@ -55,20 +76,22 @@
     <!--CENTER-->
     <div class="container" id="main_center">
         
-        <!--Searchbar-->
-        <div>  
+        <div> 
+        <button  id="mod_button" onclick="mod_button_clicked()">Modifier</button> 
+        <form method=post>
+            <button style="visibility: hidden;" type="submit" id="add_client_button" name="add_client_button_submit">Ajouter un Client</button>
+        </form>
+
+        <button style="visibility: hidden;" id="rm_client_button">Enlever un Client</button>
+        <!--Searchbar-->      
             <form name="form" method="post">
-            
-                <button id="add_client_button">Ajouter un Client</button>
-                <button id="rm_client_button">Enlever un Client</button>
-                
                 <input id="search_bar" name="search" type="text" placeholder="Search..">
                 <input type="submit" name="submit">
             
             </form>
+        <!--END Searchbar-->
 
         </div>
-        <!--END Searchbar-->
 
 
         
@@ -116,7 +139,42 @@
 </footer>
 <!--END_FOOTER-->
 
+<script>
 
+
+//hide buttons functions
+<?php 
+if(isset($_POST['add_client_button_submit'])){
+    //add client to database
+    add_client_to_database($db);
+    echo 'location.href="index.php?";';
+}
+?>
+
+
+function hide_mod_button(){
+    document.getElementById("mod_button").style="visibility:hidden";
+}
+
+
+function hide_add_and_rm_button(){
+    document.getElementById("add_client_button").style="visibility:hidden";
+    document.getElementById("rm_client_button").style="visibility:hidden";
+}
+
+function show_add_and_rm_button(){
+    document.getElementById("add_client_button").style="visibility:visible";
+    document.getElementById("rm_client_button").style="visibility:visible";
+}
+
+
+function mod_button_clicked(){
+    show_add_and_rm_button();
+    hide_mod_button();
+
+}
+
+</script>
 
 
 

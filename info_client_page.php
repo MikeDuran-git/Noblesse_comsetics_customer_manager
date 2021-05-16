@@ -215,7 +215,7 @@ table, th, td {
         try{
             $sql="INSERT INTO rendezvous 
             (id_client,id_rdv,date_rdv,nom_procedure,infos_rdv) 
-            VALUES (".$client_id.",".$max_val.",'0000-00-00','inserer un nom à cette procedure','remplacer ce texte par des infos pour le rendezvous')";
+            VALUES (".$client_id.",".$max_val.",'9999-01-01','inserer un nom à cette procedure','remplacer ce texte par des infos pour le rendezvous')";
             $db->query($sql);
 
             
