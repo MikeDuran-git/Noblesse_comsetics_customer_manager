@@ -65,6 +65,23 @@
          }
      }
 
+     function show_select_clients_buttons($db){
+        $result= $db->prepare("select id from clients");
+        $result->setFetchMode(PDO:: FETCH_OBJ);
+        $result->execute(); 
+        while($row = $result->fetch()){
+             #hide the form button
+             $rdv="form_".$row->id;
+             echo "
+                document.getElementById('".$rdv."').style='display:true;'
+                ;";
+            #show the drop form buttons
+            $rdv="drop_form_".$row->id;
+            echo "
+               document.getElementById('".$rdv."').style='display:none;'
+               ;";           
+         }
+     }
     function database_print($db,$result){
         $result->setFetchMode(PDO:: FETCH_OBJ);
         $result->execute();
@@ -99,12 +116,13 @@
             if(isset($_POST["drop_row_".$counter])){
                 //add a question to be sure to delete the client
                 
-
-
                 //delete the client
                 rm_client_from_database($db,$row->id);
                 //reload the page
-                echo '<script>location.href="index.php?";</script>';
+                echo '
+                <script>
+                    location.href="index.php?";
+                </script>';
 
 
             }
@@ -125,8 +143,8 @@
     <!--CENTER-->
     <div class="container" id="main_center">
         
-        <div> 
-        <button  id="mod_button" onclick="mod_button_clicked()">Modifier</button> 
+        <div id="mod_button"> 
+        <button onclick="mod_button_clicked()">Modifier</button> 
         <!-- ADD CLIENT BUTTON -->
         <form method=post>
             <button style="visibility: hidden;" type="submit" id="add_client_button" name="add_client_button_submit">Ajouter un Client</button>
@@ -216,16 +234,30 @@ if(isset($_POST['add_client_button_submit'])){
 
 if(isset($_POST['rm_client_button_submit'])){
     hide_select_client_and_show_rm_client__buttons($db);
+    echo 'show_saving_button();';
 }
 ?>
 
+//functions to alter the modification button
 
 
+function show_saving_button(){
+        document.getElementById("mod_button").innerHTML=
+        "<button onclick='save_content()' >Sauvegarder</button>";
+}
+
+function save_content(){
+    location.href="index.php?";
+    hide_add_and_rm_button();
+}
 
 function hide_mod_button(){
     document.getElementById("mod_button").style="visibility:hidden";
 }
 
+function show_mod_button(){
+        document.getElementById("save_content_button").innerHTML='            <button onclick="mod_button_clicked()">Modifier</button> ';
+}
 
 function hide_add_and_rm_button(){
     document.getElementById("add_client_button").style="visibility:hidden";
