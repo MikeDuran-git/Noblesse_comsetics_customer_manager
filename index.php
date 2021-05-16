@@ -78,11 +78,17 @@
         
         <div> 
         <button  id="mod_button" onclick="mod_button_clicked()">Modifier</button> 
+        <!-- ADD CLIENT BUTTON -->
         <form method=post>
             <button style="visibility: hidden;" type="submit" id="add_client_button" name="add_client_button_submit">Ajouter un Client</button>
         </form>
+        <!-- ADD CLIENT BUTTON END-->
 
+        <!-- RM CLIENT BUTTON -->
         <button style="visibility: hidden;" id="rm_client_button">Enlever un Client</button>
+        <!-- RM CLIENT BUTTON END -->
+
+
         <!--Searchbar-->      
             <form name="form" method="post">
                 <input id="search_bar" name="search" type="text" placeholder="Search..">
@@ -147,8 +153,14 @@
 if(isset($_POST['add_client_button_submit'])){
     //add client to database
     add_client_to_database($db);
-    echo 'location.href="index.php?";';
-}
+
+    //switch page to this new clients informations
+        $gid=$db->prepare("SELECT MAX(id) as maximum FROM clients");
+        $gid->execute();
+        $max_val = $gid->fetch(PDO::FETCH_ASSOC);
+        $max_val=$max_val['maximum'];
+        $infos_to_send='client_id='.$max_val.'';
+        echo 'location.href="info_client_page.php?'.$infos_to_send.'";';}
 ?>
 
 

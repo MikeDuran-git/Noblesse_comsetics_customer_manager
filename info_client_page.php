@@ -458,17 +458,10 @@ table, th, td {
         $gid->execute();
         $max_val = $gid->fetch(PDO::FETCH_ASSOC);
         $max_val=$max_val['maximum']+1;
-
-        $infos_to_send='client_id='.$client_id.
-                            '';
+        
+        //reload the page
+        $infos_to_send='client_id='.$client_id.'';
         echo 'location.href="info_client_page.php?'.$infos_to_send.'";';
-        /*
-        echo "location.href='info_procedure_page.php?client_id=".$client_id
-        ."&nom_client=".$nom
-        ."&id_rdv=".$max_val
-        ."';";
-        */
-        #echo "document.location.reload(true);";
     }
 ?>
 
