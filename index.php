@@ -14,15 +14,18 @@
     <?php
     include 'connexion.php';
     session_start();
-    
+
+    $_SESSION["sql_requests"]="";
+
+
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
         $url = "https://";   
     else  
         $url = "http://";   
-    // Append the host(domain name, ip) to the URL.   
-    $url.= $_SERVER['HTTP_HOST'];   
-    // Append the requested resource location to the URL   
-    $url.= $_SERVER['REQUEST_URI'];    
+        // Append the host(domain name, ip) to the URL.   
+        $url.= $_SERVER['HTTP_HOST'];   
+        // Append the requested resource location to the URL   
+        $url.= $_SERVER['REQUEST_URI'];    
 
     function add_client_to_database($db){
         try{
@@ -55,13 +58,17 @@
              #hide the form button
              $rdv="form_".$row->id;
              echo "
-                document.getElementById('".$rdv."').style='display:none;'
-                ;";
+                if(!!document.getElementById('".$rdv."')){
+                    document.getElementById('".$rdv."').style='display:none;';
+                }
+                ";
             #show the drop form buttons
             $rdv="drop_form_".$row->id;
             echo "
-               document.getElementById('".$rdv."').style='display:true;'
-               ;";           
+                if(!!document.getElementById('".$rdv."')){
+                    document.getElementById('".$rdv."').style='display:true;';
+                }
+                ";          
          }
      }
 
@@ -73,13 +80,16 @@
              #hide the form button
              $rdv="form_".$row->id;
              echo "
-                document.getElementById('".$rdv."').style='display:true;'
-                ;";
+                if(!!document.getElementById('".$rdv."')){
+                    document.getElementById('".$rdv."').style='display:true;';
+                }
+                ";
             #show the drop form buttons
             $rdv="drop_form_".$row->id;
             echo "
-               document.getElementById('".$rdv."').style='display:none;'
-               ;";           
+                if(!!document.getElementById('".$rdv."')){
+                    document.getElementById('".$rdv."').style='display:none;';
+                }";           
          }
      }
     function database_print($db,$result){
@@ -144,17 +154,19 @@
     <div class="container" id="main_center">
         
         <div id="mod_button"> 
-        <button onclick="mod_button_clicked()">Modifier</button> 
+            <button onclick="mod_button_clicked()">Modifier</button> 
+        </div>
         <!-- ADD CLIENT BUTTON -->
+        <div>
         <form method=post>
             <button style="visibility: hidden;" type="submit" id="add_client_button" name="add_client_button_submit">Ajouter un Client</button>
         </form>
         <!-- ADD CLIENT BUTTON END-->
 
         <!-- RM CLIENT BUTTON -->
-        <form method=post>
-            <button style="visibility: hidden;" type="submit" id="rm_client_button" name="rm_client_button_submit">Enlever un Client</button>
-        </form>
+        <!-- <form method=post> -->
+            <button style="visibility: hidden;" id="rm_client_button" name="rm_client_button_submit" onclick="rm_client_button_clicked()">Enlever un Client</button>
+        <!-- </form> -->
         <!-- RM CLIENT BUTTON END -->
 
 
@@ -185,23 +197,30 @@
     
                     if(isset($_POST['submit'])) {
                         $client_name= $_POST['search'];
+
                         //le cas si il n'y a pas de nom spécifié
                         if (strlen($client_name)==0){
+                            
                             $result= $db->prepare("SELECT * FROM `clients`");
                         }
                         else{
                         //le cas si il y a un nom donner
+                        $_SESSION["sql_requests"]="SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'";
                             $result= $db->prepare("SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'");
                         }
+
                         database_print($db,$result);
                     }
                 else{
                     $result= $db->prepare("SELECT * FROM `clients`");
+                    
                     database_print($db,$result);
                 }
+                echo $_SESSION["sql_requests"];
                 ?>
                 <!--PHP input structure END-->
             </table>
+
         </div>
         <!--END DB_content-->
     </div>
@@ -232,18 +251,28 @@ if(isset($_POST['add_client_button_submit'])){
         echo 'location.href="info_client_page.php?'.$infos_to_send.'";';
 }
 
-if(isset($_POST['rm_client_button_submit'])){
-    hide_select_client_and_show_rm_client__buttons($db);
-    echo 'show_saving_button();';
-}
+// if(isset($_POST['rm_client_button_submit'])){
+
+//     hide_select_client_and_show_rm_client__buttons($db);
+//     echo 'show_saving_button();';
+// }
 ?>
+
+function rm_client_button_clicked(){
+
+<?php
+    hide_select_client_and_show_rm_client__buttons($db);
+?>
+
+    show_saving_button();
+}
 
 //functions to alter the modification button
 
 
 function show_saving_button(){
         document.getElementById("mod_button").innerHTML=
-        "<button onclick='save_content()' >Sauvegarder</button>";
+        "<button id='save_content_button' onclick='save_content()'>Sauvegarder</button>";
 }
 
 function save_content(){
@@ -252,7 +281,7 @@ function save_content(){
 }
 
 function hide_mod_button(){
-    document.getElementById("mod_button").style="visibility:hidden";
+    show_saving_button();
 }
 
 function show_mod_button(){
