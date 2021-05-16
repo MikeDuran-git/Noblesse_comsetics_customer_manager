@@ -103,13 +103,13 @@
             <td>
                 <div id="form_'.$row->id.'">
                     <form action="info_client_page.php?client_id='.$row->id.'" method="POST"> 
-                        <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$counter.'">
+                        <input type="submit" style="text-align: center;" value="Choisir ce client" name="select_'.$row->id.'">
                     </form>
                 </div>
 
                 <div id="drop_form_'.$row->id.'" style="display:none;">
                     <form method="POST"> 
-                        <input type="submit" style="text-align: center;" value="Enlever ce client" name="drop_row_'.$counter.'">
+                        <input type="submit" style="text-align: center;" value="Enlever le client '.$row->id.' " name="drop_row_'.$row->id.'">
                     </form>
                 </div>
             </td>
@@ -123,12 +123,14 @@
                 $row->Email. # email
             '</td>
             ';
-            if(isset($_POST["drop_row_".$counter])){
+            if(isset($_POST["drop_row_".$row->id])){
                 //add a question to be sure to delete the client
                 
                 //delete the client
+
                 rm_client_from_database($db,$row->id);
                 //reload the page
+                echo "<script>alert('".$row->id." removed');</script>";
                 echo '
                 <script>
                     location.href="index.php?";
@@ -205,7 +207,6 @@
                         }
                         else{
                         //le cas si il y a un nom donner
-                        $_SESSION["sql_requests"]="SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'";
                             $result= $db->prepare("SELECT * FROM `clients` WHERE nom='$client_name' or prenom='$client_name' or num_tel='.$client_name.'");
                         }
 
@@ -250,12 +251,6 @@ if(isset($_POST['add_client_button_submit'])){
         $infos_to_send='client_id='.$max_val.'';
         echo 'location.href="info_client_page.php?'.$infos_to_send.'";';
 }
-
-// if(isset($_POST['rm_client_button_submit'])){
-
-//     hide_select_client_and_show_rm_client__buttons($db);
-//     echo 'show_saving_button();';
-// }
 ?>
 
 function rm_client_button_clicked(){
