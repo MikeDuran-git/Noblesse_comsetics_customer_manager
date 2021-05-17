@@ -6,6 +6,15 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 <link rel="stylesheet" href="./layouts/index.css">
 
+<style>
+
+#id01{
+  background-color: #474e5d;
+  padding-top: 20%;    
+}
+</style>
+
+
 </head>
 <body style="background-color: burlywood;">
 
@@ -15,7 +24,7 @@
     include 'connexion.php';
     session_start();
 
-    $_SESSION["sql_requests"]="";
+    $_SESSION["client_to_be_removed"]="";
 
 
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
@@ -108,9 +117,10 @@
                 </div>
 
                 <div id="drop_form_'.$row->id.'" style="display:none;">
-                    <form method="POST"> 
-                        <input type="submit" style="text-align: center;" value="Enlever le client '.$row->id.' " name="drop_row_'.$row->id.'">
-                    </form>
+                    <button id="button_to_rm_'.$row->id.'" style="text-align: center;" value="Enlever le client '.$row->id.' " name="drop_row_'.$row->id.'
+                    ">
+                    Enlever le client '.$row->id.'
+                    </button>
                 </div>
             </td>
             <td>'.
@@ -123,21 +133,29 @@
                 $row->Email. # email
             '</td>
             ';
-            if(isset($_POST["drop_row_".$row->id])){
-                //add a question to be sure to delete the client
+            #if(isset($_POST["drop_row_".$row->id])){
                 
-                //delete the client
+                // //delete the client
+                // rm_client_from_database($db,$row->id);
+                // //reload the page
+                // echo "<script>alert('".$row->id." removed');</script>";
+                // echo '
+                // <script>
+                //     location.href="index.php?";
+                // </script>';
 
-                rm_client_from_database($db,$row->id);
-                //reload the page
-                echo "<script>alert('".$row->id." removed');</script>";
-                echo '
-                <script>
-                    location.href="index.php?";
-                </script>';
+                //affiche le modal "est tu sure de vouloir l'enlever"
 
-
-            }
+            #}
+            echo '
+            <script>
+                document.getElementById("button_to_rm_'.$row->id.'").addEventListener("click", function() {
+                    document.getElementById("id01").style.display="block";
+                    document.getElementById("id_of_client_to_be_removed").innerHTML="'.$row->id.'";
+                    document.getElementById("client_id_to_rm").value="'.$row->id.'";
+              });
+            </script>
+            ';
         };
         if($counter==0){ echo "Le nom, le prenom ou le numero de telephone de ce Client n'existe pas";}
     };
@@ -217,7 +235,6 @@
                     
                     database_print($db,$result);
                 }
-                echo $_SESSION["sql_requests"];
                 ?>
                 <!--PHP input structure END-->
             </table>
@@ -227,18 +244,61 @@
     </div>
     <!--END CENTER-->
 
+    <!-- MODAL END -->
+            <!-- <button id="id01_button" onclick="document.getElementById('id01').style.display='block'">Open Modal</button> -->
 
+            <div id="id01" class="modal">
+                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
+                <form class="modal-content">
+                    <div class="container">
+                        <h1>Effacer un Client</h1>
+                        
+                        <p>Est tu sur de vouloir effacer :
+                            <p id="id_of_client_to_be_removed"></p><br> 
+                        <strong style="color: red;">Tout ses rendezvous, images et procédures effectués seront définitivement perduent.</strong>
+                        </p>
 
+                        <div>
+                            <button type="button" onclick="document.getElementById('i d01').style.display='none'">Annuler</button>
+
+                            <form action="index.php" method="GET
+                            "> 
+                                
+                                <input id="client_id_to_rm" name="client_rm" type="text" readonly>
+                                
+                                <input type="submit" value="Enlever ce Client" name="remove_the_client_permanently">
+                            </form>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    <!-- MODAL END -->
+    <p id="tester"></p>
 <!--FOOTER-->
 <footer id="main_footer">
 </footer>
 <!--END_FOOTER-->
+
+
+<?php 
+if(isset($_GET['client_rm'])){
+    //delete the client
+    rm_client_from_database($db,$_GET['client_rm']);
+    //reload the page
+    echo '<script>location.href="index.php?";</script>';
+}
+
+?>
 
 <script>
 
 
 //hide buttons functions
 <?php 
+
+
+
+
 if(isset($_POST['add_client_button_submit'])){
     //add client to database
     add_client_to_database($db);
