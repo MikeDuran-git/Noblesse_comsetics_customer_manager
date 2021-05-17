@@ -245,7 +245,6 @@
     <!--END CENTER-->
 
     <!-- MODAL END -->
-            <!-- <button id="id01_button" onclick="document.getElementById('id01').style.display='block'">Open Modal</button> -->
 
             <div id="id01" class="modal">
                 <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
@@ -259,12 +258,12 @@
                         </p>
 
                         <div>
-                            <button type="button" onclick="document.getElementById('i d01').style.display='none'">Annuler</button>
+                            <button type="button" onclick="document.getElementById('id01').style.display='none'">Annuler</button>
 
                             <form action="index.php" method="GET
                             "> 
                                 
-                                <input id="client_id_to_rm" name="client_rm" type="text" readonly>
+                                <input id="client_id_to_rm" name="client_rm" type="text" style="display: none;" readonly>
                                 
                                 <input type="submit" value="Enlever ce Client" name="remove_the_client_permanently">
                             </form>
@@ -295,9 +294,6 @@ if(isset($_GET['client_rm'])){
 
 //hide buttons functions
 <?php 
-
-
-
 
 if(isset($_POST['add_client_button_submit'])){
     //add client to database
