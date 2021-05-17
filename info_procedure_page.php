@@ -362,9 +362,7 @@ textarea{
                         ?>
                         <form style="display:true;" method="POST" enctype="multipart/form-data">
                         <?php
-                            echo "<div id='info_rdv_content'>
-                                    <p>".$infos_rdv."</p>
-                                </div>";
+                            echo "<div id='info_rdv_content'>".$infos_rdv."</div>";
                         ?>
                             <!-- button to display the alter info_rdv input -->
                             <button type="submit" name='change_info_rdv' id="change_info_rdv_button_id" style="display:none;">
@@ -490,12 +488,12 @@ textarea{
       
         #get the content of the textarea
 
-        $new_info= htmlspecialchars( $_POST['my_text_id']);
+        $new_info= $_POST['my_text_id'];
         #hide warning sign
         echo 'document.getElementById("warning_br").style="display:none;";
         ';
         #add the new name procedure to the html
-        echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info.'</p>";';
+        echo 'document.getElementById("info_rdv_content").innerHTML = "<p>'.$new_info.'<p>";';
 
         #change the name of the procedure to the database
         change_info_rdv($db,$client_id,$id_rdv,$new_info);
@@ -506,10 +504,25 @@ textarea{
 function set_text_area(){
     document.getElementById("warning_br").style="display:true;color:red;";
 
-    document.getElementById("info_rdv_content").innerHTML = "<br><textarea rows=9 name='my_text_id' ><?php echo $infos_rdv?></textarea></br>";
+    document.getElementById("info_rdv_content").innerHTML =
+    "<br><textarea id='my_txtarea' rows=9 name='my_text_id' ><?php echo $infos_rdv?></textarea>";
 
     var txt=document.getElementById('info_rdv_content').getElementsByTagName('textarea')[0].value;
 
+    document.getElementById('my_txtarea').addEventListener('keydown', function(e) {
+    // Get the code of pressed key
+    const keyCode = e.which || e.keyCode;
+
+    // 13 represents the Enter key
+    if (keyCode === 13 && !e.shiftKey) {
+        // Don't generate a new line
+        e.preventDefault();
+
+        // Do something else such as send the message to back-end
+        // ...
+        
+    }
+});
     
 }
 
@@ -634,6 +647,8 @@ document.addEventListener('input', function (event) {
 if (event.target.tagName.toLowerCase() !== 'textarea') return;
 autoExpand(event.target);
 }, false);
+
+
 
 
 </script>

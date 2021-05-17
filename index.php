@@ -133,20 +133,6 @@
                 $row->Email. # email
             '</td>
             ';
-            #if(isset($_POST["drop_row_".$row->id])){
-                
-                // //delete the client
-                // rm_client_from_database($db,$row->id);
-                // //reload the page
-                // echo "<script>alert('".$row->id." removed');</script>";
-                // echo '
-                // <script>
-                //     location.href="index.php?";
-                // </script>';
-
-                //affiche le modal "est tu sure de vouloir l'enlever"
-
-            #}
             echo '
             <script>
                 document.getElementById("button_to_rm_'.$row->id.'").addEventListener("click", function() {
@@ -246,7 +232,7 @@
 
     <!-- MODAL END -->
 
-            <div id="id01" class="modal">
+            <div id="id01" style="display:none" class="modal">
                 <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
                 <form class="modal-content">
                     <div class="container">
